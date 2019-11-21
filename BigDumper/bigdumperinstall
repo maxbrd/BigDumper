@@ -1,0 +1,23 @@
+#!/bin/sh
+#Big_Dumper_Install
+
+#installation de miLazyCracker
+cd /root/miLazyCracker
+./miLazyCrackerFreshInstall.sh
+cd ../
+
+#installation de MFOC
+cd /root/mfoc
+autoreconf -is
+./configure
+make && sudo make install
+cd ../
+
+#installation de hexedit
+apt-get install hexedit
+
+#création de la commande dump
+chmod +x /root/BigDumper/prog/Big_Dumper
+cd /usr/bin
+ln -s /root/BigDumper/prog/Big_Dumper dump
+cd ../

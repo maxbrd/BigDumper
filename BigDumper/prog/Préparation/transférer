@@ -1,0 +1,26 @@
+#!/bin/sh
+#TRASNFERE
+
+clear
+echo "TRANSFERE D'UN DUMP"
+
+echo "Modifier l'UID? (y/n)"
+	read choix
+	clear
+
+if [ $choix = "y" ]
+	then
+		echo "Nom du dump à copier:"
+		read nom
+		clear
+		nfc-mfclassic W A /root/dump/dump/$nom.dmp 
+		
+	elif [ $choix = "n" ]
+	then
+		echo "Nom du dump à copier:"
+		read nom
+		echo "Nom de l'ancien dump:"
+		read ancien
+		clear
+		nfc-mfclassic w B /root/dump/dump/$nom.dmp /root/dump/dump/$ancien.dmp
+	fi

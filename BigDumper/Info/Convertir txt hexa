@@ -1,0 +1,5 @@
+Convertir Hexa en TXT:
+	echo 8ce85 | xxd -r -p
+
+Convertir TXT en Hexa:
+	echo montexte | xxd -p

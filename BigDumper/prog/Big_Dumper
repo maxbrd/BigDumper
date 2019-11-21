@@ -1,0 +1,239 @@
+#!/bin/sh
+#Big Dumper
+
+##VARIABLES##
+bon=n
+a=1
+
+##COULEURS##
+RS="\033[1;31m" #rouge gras
+NS="\033[0m" #normal
+YS="\033[1;33m" #jaune gras
+ys="\033[0;33m" #jaune
+VS="\033[1;32m" #vert gras
+
+
+##FONCTIONS##
+fonction_home () {
+clear
+echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP"$NS
+echo ""
+echo $RS"Que souhaitez-vous faire?"$NS
+echo ""
+echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
+echo $YS"2) "$VS"Dumper miFareMini avec miLazyCracker (implique clé A ou B connue)"$NS
+echo $YS"3) "$VS"Ecrire sur la carte"$NS
+echo $YS"4) "$VS"Nfc-list"$NS
+echo $YS"5) "$VS"Editer un dump"$NS
+echo $YS"6) "$VS"Différences des dumps"$NS
+echo ""
+echo $YS"00) QUITTER"$NS
+echo ""
+read faire
+clear
+}
+fonction_erreur () {
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ] ; do  #Boucle d'erreur
+		clear
+		echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP"$NS
+		echo ""
+		echo $RS"Que souhaitez-vous faire?"$NS
+		echo ""
+		echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
+		echo $YS"2) "$VS"Dumper miFareMini avec miLazyCracker (implique clé A ou B connue)"$NS
+		echo $YS"3) "$VS"Ecrire sur la carte"$NS
+		echo $YS"4) "$VS"Nfc-list"$NS
+		echo $YS"5) "$VS"Editer un dump"$NS
+		echo $YS"6) "$VS"Différences des dumps"$NS
+		echo ""
+		echo $YS"00) QUITTER"
+		echo $RS"Erreur de choix, merci de recommencer."$NS
+		echo ""
+		read faire
+		clear
+done
+}
+fonction_mfoc () {
+echo $YS"	MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+echo ""
+
+ls /root/BigDumper/clé
+echo $RS"Choisir un fichier de Clé (mettre ""clé"" par défaut) sans extension:"$NS
+echo ""
+read cle
+if [ $cle = 01 ] ; then break ; fi
+clear
+
+echo $YS"	MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo ""
+echo $RS"Nom du fichier:"$NS
+echo ""
+read fichier
+if [ $fichier = 01 ] ; then break ; fi
+clear
+			
+mfoc -P 500 -f /root/BigDumper/clé/$cle.txt -O /root/BigDumper/dump/$fichier.dmp
+}
+fonction_transfere () {
+echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo ""
+
+echo $RS"Modifier l'UID? (y/n)"$NS
+echo ""
+read choix
+if [ $choix = 01 ] ; then break ; fi
+clear
+
+	if [ $choix = "y" ]
+		then
+			echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo ""
+		
+			ls /root/BigDumper/dump
+			echo $RS"Nom du dump à copier (sans extension):"$NS
+			echo ""
+			read nom
+			if [ $nom = 01 ] ; then break ; fi
+			clear
+			nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp 
+					
+	elif [ $choix = "n" ]
+		then
+			echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo ""
+		
+			ls /root/BigDumper/dump
+			echo $RS"Nom du dump à copier(sans extension):"$NS
+			echo ""
+			read nom
+			if [ $nom = 01 ] ; then break ; fi
+			echo $RS"Nom de l'ancien dump(sans extension):"$NS
+			echo ""
+			read ancien
+			if [ $ancien = 01 ] ; then break ; fi
+			clear
+			nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
+	fi
+}
+fonction_milazy () {
+
+cd miLazyCracker
+cd crypto1_bs
+clear
+		
+until [ $bon = y ]||[ $bon = yes ]||[ $bon = oui ]||[ $bon = o ]||[ $bon = Y ]||[ $bon = O ] ; do
+		clear
+		echo $YS"	miLazyCracker		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+		echo ""
+		
+		echo $RS"Clé connue:"$NS
+		read cle1
+		if [ $cle1 = 01 ] ; then break 2 ; fi
+
+		echo ""
+		echo $RS"Numéro du secteur connu X 4:"$NS
+		read secteur
+		if [ $secteur = 01 ] ; then break 2 ; fi
+
+		echo ""
+		echo $RS"Clé A ou B?"$NS
+		read cle2
+		if [ $cle2 = 01 ] ; then break 2 ; fi
+
+		echo ""
+		echo $RS"Clé cherchée du même secteur (A ou B):"$NS
+		read cle3
+		if [ $cle3 = 01 ] ; then break 2 ; fi
+		
+		echo ""
+		echo $RS"Tout est correcte? (y/n)"$NS
+		read bon
+		if [ $bon = 01 ] ; then break 2 ; fi
+	done
+clear
+
+./libnfc_crypto1_crack $cle1 $secteur $cle2 $secteur $cle3
+#./libnfc_crypto1_crack <known key> <NumeroSecteurConnu[x]4(nbr de bloc)> <A|B> <BLOCK RECHERCHE (même que précédant)> <A|B>
+}
+fonction_nfc_list () {
+clear
+nfc-list
+}
+fonction_hexedit () {
+echo $YS"	EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo ""
+		
+			ls /root/BigDumper/dump
+			echo $RS"Nom du dump à éditer (sans extension):"$NS
+			echo ""
+			read hex
+			if [ $hex = 01 ] ; then break ; fi
+			clear
+			hexedit /root/BigDumper/dump/$hex.dmp
+}
+fonction_diff () {
+echo $YS"	DIFF	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+echo ""
+
+cd /root/BigDumper/dump
+ls
+echo $RS"Choisir le premier fichier à comparer sans extension:"$NS
+echo ""
+read dump1
+if [ $dump1 = 01 ] ; then break ; fi
+
+echo ""
+echo $RS"Choisir le deuxième fichier à comparer sans extension:"$NS
+echo ""
+read dump2
+if [ $dump2 = 01 ] ; then break ; fi
+clear
+			
+diff $dump1.dmp $dump2.dmp
+}
+
+##CODE##
+
+until [ $a != 1 ]&&[ $faire = 00 ] ; do
+until [ $a != 1 ]&&[ $faire = 01 ] ; do
+
+fonction_home
+fonction_erreur	
+		
+if [ $faire = 1 ]
+	then
+		fonction_mfoc
+		
+elif [ $faire = 2 ]
+	then
+		fonction_milazy	
+	 	
+elif [ $faire = 3 ]
+	then
+		fonction_transfere
+
+elif [ $faire = 4 ]
+	then
+		fonction_nfc_list
+		
+elif [ $faire = 5 ]
+	then
+		fonction_hexedit
+		
+elif [ $faire = 6 ]
+	then
+		fonction_diff		
+		
+elif [ $faire = 00 ]
+	then
+		exit
+fi
+
+echo ""
+echo $YS"TERMINE"$NS
+echo $YS"Press Enter pour quitter"$NS
+read "pause"
+clear
+
+done
+done

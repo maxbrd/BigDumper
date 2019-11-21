@@ -1,0 +1,70 @@
+#!/bin/sh
+#FINAL
+
+##COULEURS##
+r="\033[1;31m" #rouge gras
+n="\033[0m" #normal
+##
+
+##FONCTIONS##
+fonction_copie () {
+echo $r"Choisir un fichier de Clé (mettre ""clé"" par défaut) sans extension:"$n
+		ls /root/dump/clé
+			read cle
+			clear
+
+		echo $r"Nom du fichier:"$n
+			read fichier
+			clear
+			
+		mfoc -P 500 -f /root/dump/clé/$cle.txt -O /root/dump/dump/$fichier.dmp
+			echo $r"Press Enter pour quitter"$n
+			read "pause"
+}
+fonction_transfere () {
+echo $r"Modifier l'UID? (y/n)"$n
+read choix
+clear
+
+	if [ $choix = "y" ]
+		then
+			ls /root/dump/dump
+			echo $r"Nom du dump à copier (sans extension):"$n
+			read nom
+			clear
+			nfc-mfclassic W A /root/dump/dump/$nom.dmp 
+					
+	elif [ $choix = "n" ]
+		then
+			ls /root/dump/dump
+			echo $r"Nom du dump à copier(sans extension):"$n
+			read nom
+			echo $r"Nom de l'ancien dump(sans extension):"$n
+			read ancien
+			clear
+			nfc-mfclassic w B /root/dump/dump/$nom.dmp /root/dump/dump/$ancien.dmp
+	fi
+}
+##
+
+clear
+echo $r"Que souhaitez-vous faire? (copier(c)/transferer(t))"$n
+read faire
+clear
+
+until [ $faire = copier ]||[ $faire = c ]||[ $faire = transferer ]||[ $faire = t ] ; do
+		echo $r"Erreur de réponse, merci de recommencer."$n
+		echo $r"Que souhaitez-vous faire? (copier(c)/transferer(t))"$n
+		read faire
+		clear
+	done	
+		
+if [ $faire = copier ]||[ $faire = c ]
+	then
+		fonction_copie
+		 
+		
+elif [ $faire = transferer ]||[ $faire = t ]
+	then
+		fonction_transfere
+fi

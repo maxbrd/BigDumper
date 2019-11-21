@@ -1,0 +1,33 @@
+root@kali:~# git clone https://github.com/nfc-tools/miLazyCracker
+root@kali:~# cd miLazyCracker
+
+AJOUTER LES DEUX FICHIERS -craptev1-v1.1.tar.xz -crapto1-v3.3.tar.xz DANS LE DOSSIER MILAZYCRACKER  
+
+root@kali:~/miLazyCracker# ./miLazyCrackerFreshInstall.sh
+
+-Installation:
+
+./miLazyCrackerFreshInstall.sh
+
+-Usage example: place a tag and enjoy
+
+mkdir mydumps
+cd mydumps
+miLazyCracker
+
+USAGE:
+cd miLazyCracker
+cd crypto1_bs
+./libnfc_crypto1_crack <known key> <NumeroSecteurConnu[x]4(nbr de bloc)> <A|B> <BLOCK RECHERCHE (même que précédant)> <A|B>
+
+
+
+
+
+
+
+
+
+
+
+

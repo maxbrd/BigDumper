@@ -1,0 +1,16 @@
+#!/bin/sh
+#COPIE
+
+clear
+
+echo "Fichier des Clé (mettre ""clé"" par défaut):"
+	read cle
+	clear
+
+echo "Nom du fichier:"
+	read fichier
+	clear
+	
+mfoc -P 500 -f /root/dump/clé/$cle.txt -O /root/dump/dump/$fichier.dmp
+	echo "Press Enter pour quitter"
+	read "pause" 
