@@ -196,7 +196,7 @@ diff $dump1.dmp $dump2.dmp
 
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
-
+printf '\033]2;BigDumper\a'
 fonction_home
 fonction_erreur	
 		
