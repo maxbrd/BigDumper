@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -f craptev1-v1.1.tar.xz ] || [ ! -f crapto1-v3.3.tar.xz ]; then
-    echo "I need craptev1-v1.1.tar.xz and crapto1-v3.3.tar.xz. Aborting."
+    echo "J'ai besoin de craptev1-v1.1.tar.xz et de crapto1-v3.3.tar.xz. Fin."
     exit 1
 fi
 
@@ -50,4 +50,4 @@ fi
 
 # install our script
 sudo cp -a miLazyCracker.sh /usr/local/bin/miLazyCracker
-echo "Done."
+echo "Terminé."

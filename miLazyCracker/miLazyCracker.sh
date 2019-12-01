@@ -42,10 +42,11 @@ ask() {
 }
 
 myUID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p')
-TMPFILE_MFD="mfc_${myUID}_dump.mfd"
+TMPFILE_MFD="mfc_${myUID}_dump.dmp"
 TMPFILE_UNK="mfc_${myUID}_unknownMfocSectorInfo.txt"
 TMPFILE_FND="mfc_${myUID}_foundKeys.txt"
 
+cd /root/BigDumper/dump
 if [ -f "$TMPFILE_FND" ]; then
     mfoc -f "$TMPFILE_FND" -O "$TMPFILE_MFD"  -D "$TMPFILE_UNK"
 else
@@ -59,7 +60,7 @@ foundKeysForMFOC=" "
 while [ $keepTrying -eq 1 ]; do
     #echo "MFOC result: $mfocResult"
     if [ "$mfocResult" == "$prngNotVulnerable" ]; then
-        echo "MFOC not possible, detected hardened Mifare Classic"
+        echo "MFOC pas possible, Hardened Mifare Classic détecté"
         if [ "$mfocResult" -eq 9 ]; then
             count=0
             while read -r LINE; do
@@ -88,7 +89,7 @@ while [ $keepTrying -eq 1 ]; do
             if [ "$unknownSectorNum" -gt 31 ]; then
                 unknownBlockNum=$((128+((unknownSectorNum-32)*16)))
             fi
-            echo "Trying HardNested Attack..."
+            echo "Nous essayons une HardNested Attack..."
             mycmd=(libnfc_crypto1_crack "$knownKey" "$knownBlockNum" "$knownKeyLetter" "$unknownBlockNum" "$unknownKeyLetter" "$TMPFILE_FND")
             echo "${mycmd[@]}"
             "${mycmd[@]}"
@@ -119,12 +120,13 @@ while [ $keepTrying -eq 1 ]; do
     fi
 done
 
-rm -f "$TMPFILE_UNK" "0x${myUID}_"*".txt"
+rm -f "$TMPFILE_UNK" "0x${myUID}_"*".txt" "$TMPFILE_FND"
 if [ $mfocResult -eq 0 ]; then
-    echo -e "\n\nDump left in: $TMPFILE_MFD"
-    if ask "Do you want clone the card? Place card on reader now and press Y"; then
+    echo -e "\n\nDump placé dan sle fichier: $TMPFILE_MFD"
+    if ask "voulez-vous cloner la carte? Si OUI, placez la nouvelle carte sur le copieur et appuyez sur Y"; then
          nfc-mfclassic W a $TMPFILE_MFD
     fi
 else
-    rm -f "$TMPFILE_MFD"
+	cd /root
+	exit
 fi
