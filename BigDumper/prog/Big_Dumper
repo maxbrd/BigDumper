@@ -23,10 +23,11 @@ echo ""
 echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
 echo $YS"2) "$VS"Dumper un carte avec miLazyCracker (peut être long!)"$NS
 echo $YS"3) "$VS"Ecrire sur la carte"$NS
-echo $YS"4) "$VS"Nfc-list"$NS
-echo $YS"5) "$VS"Editer un dump"$NS
-echo $YS"6) "$VS"Différences des dumps"$NS
-echo $YS"7) "$VS"Supprimer un dumps"$NS
+echo $YS"4) "$VS"Trasnférer automatiquement sur la carte"$NS
+echo $YS"5) "$VS"Nfc-list"$NS
+echo $YS"6) "$VS"Editer un dump"$NS
+echo $YS"7) "$VS"Différences des dumps"$NS
+echo $YS"8) "$VS"Supprimer un dumps"$NS
 echo ""
 echo $YS"00) QUITTER"$NS
 echo ""
@@ -34,7 +35,7 @@ read faire
 clear
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ] ; do  #Boucle d'erreur
 		clear
 		echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP"$NS
 		echo ""
@@ -43,10 +44,11 @@ until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire =
 		echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
 		echo $YS"2) "$VS"Dumper un carte avec miLazyCracker (peut être long!)"$NS
 		echo $YS"3) "$VS"Ecrire sur la carte"$NS
-		echo $YS"4) "$VS"Nfc-list"$NS
-		echo $YS"5) "$VS"Editer un dump"$NS
-		echo $YS"6) "$VS"Différences des dumps"$NS
-		echo $YS"7) "$VS"Supprimer un dumps"$NS
+		echo $YS"4) "$VS"Trasnférer automatiquement sur la carte"$NS
+		echo $YS"5) "$VS"Nfc-list"$NS
+		echo $YS"6) "$VS"Editer un dump"$NS
+		echo $YS"7) "$VS"Différences des dumps"$NS
+		echo $YS"8) "$VS"Supprimer un dumps"$NS
 		echo ""
 		echo $YS"00) QUITTER"
 		echo $RS"Erreur de choix, merci de recommencer."$NS
@@ -76,8 +78,12 @@ clear
 if [ -z "$cle" ]  #Si la variable cle est vide alors
 	then	
 	mfoc -P 500 -O /root/BigDumper/dump/$fichier.dmp
+	fonction_UID
+	cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
 	else
 	mfoc -P 500 -f /root/BigDumper/clé/$cle.txt -O /root/BigDumper/dump/$fichier.dmp
+	fonction_UID
+	cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
 fi
 }
 fonction_transfere () {
@@ -120,6 +126,21 @@ clear
 			clear
 			nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
 	fi
+}
+fonction_transfereAuto () {
+echo $YS"	TRANSFERE AUTOMATIQUE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo ""
+echo $RS"Placer le tag NFC sur le lecteur puis appuyer sur ENTREE"$NS
+read auto
+if [ $auto = 01 ] ; then break ; fi
+clear
+cd /root/BigDumper/dump/NePasSupprimer
+fonction_UID
+FICHIER_UID="${UID}.dmp"
+if [ -f $FICHIER_UID ] ; then
+nfc-mfclassic w B /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID
+else
+echo "Aucun fichier ne correspond!" ; fi
 }
 fonction_milazy () {
 miLazyCracker
@@ -232,6 +253,9 @@ elif [ $supp = 01 ] ; then break ; fi
 cd /root
 rep=""
 }
+fonction_UID () {
+UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
+}
 
 ##CODE##
 
@@ -255,17 +279,21 @@ elif [ $faire = 3 ]
 
 elif [ $faire = 4 ]
 	then
-		fonction_nfc_list
-		
+		fonction_transfereAuto
+
 elif [ $faire = 5 ]
 	then
-		fonction_hexedit
+		fonction_nfc_list
 		
 elif [ $faire = 6 ]
 	then
+		fonction_hexedit
+		
+elif [ $faire = 7 ]
+	then
 		fonction_diff		
 
-elif [ $faire = 7 ]
+elif [ $faire = 8 ]
 	then
 		fonction_supp
 		
