@@ -224,6 +224,7 @@ clear
 if [ $rep = oui ] 
 	then
 		rm "$supp".dmp
+		echo $VS"$supp "$YS"a bien été supprimé "
 elif [ $rep = non ]
 	then
 	break
