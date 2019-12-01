@@ -144,7 +144,7 @@ int main(int argc, char *const argv[])
       case 'P':
         // Number of probes
         if (!(probes = atoi(optarg)) || probes < 1) {
-          ERR("The number of probes must be a positive number");
+          ERR("Le nombre de Probes doit être positif");
           exit(EXIT_FAILURE);
         }
         // fprintf(stdout, "Number of probes: %d\n", probes);
@@ -162,7 +162,7 @@ int main(int argc, char *const argv[])
       break;
     case 'f':
     if (!(fp = fopen(optarg, "r"))) {
-                fprintf(stderr, "Cannot open keyfile: %s, exiting\n", optarg);
+                fprintf(stderr, "Impossible d'ouvrir le fichier de clé: %s, exiting\n", optarg);
                 exit(EXIT_FAILURE);
     }
         while ((read = fgets(line, sizeof(line), fp)) != NULL) {
@@ -172,13 +172,13 @@ int main(int argc, char *const argv[])
                 //We've found a key, let's add it to the structure.
                 p = realloc(defKeys, defKeys_len + 6);
                 if (!p) {
-                  ERR("Cannot allocate memory for defKeys");
+                  ERR("Impossible d'allouer la mémoire pour defKeys");
                   exit(EXIT_FAILURE);
                 }                
                 defKeys = p;
                 memset(defKeys + defKeys_len, 0, 6);
                 num_to_bytes(strtoll(caps[0].ptr, NULL, 16), 6, defKeys + defKeys_len);
-                fprintf(stdout, "The custom key 0x%.*s has been added to the default keys\n", caps[0].len, caps[0].ptr);
+                fprintf(stdout, "Votre clé 0x%.*s a été ajoutée aux clés par défaut\n", caps[0].len, caps[0].ptr);
                 defKeys_len = defKeys_len + 6;
                 
               j += i;
@@ -189,20 +189,20 @@ int main(int argc, char *const argv[])
         // Add this key to the default keys
         p = realloc(defKeys, defKeys_len + 6);
         if (!p) {
-          ERR("Cannot allocate memory for defKeys");
+          ERR("Impossible d'allouer la mémoire pour defKeys");
           exit(EXIT_FAILURE);
         }
         defKeys = p;
         memset(defKeys + defKeys_len, 0, 6);
         num_to_bytes(strtoll(optarg, NULL, 16), 6, defKeys + defKeys_len);
-        fprintf(stdout, "The custom key 0x%012llx has been added to the default keys\n", bytes_to_num(defKeys + defKeys_len, 6));
+        fprintf(stdout, "Votre clé 0x%012llx a été ajoutée aux clés par défaut\n", bytes_to_num(defKeys + defKeys_len, 6));
         defKeys_len = defKeys_len + 6;
 
         break;
       case 'O':
         // File output
         if (!(pfDump = fopen(optarg, "wb"))) {
-          fprintf(stderr, "Cannot open: %s, exiting\n", optarg);
+          fprintf(stderr, "Impossible d'ouvrir: %s, fin\n", optarg);
           exit(EXIT_FAILURE);
         }
         // fprintf(stdout, "Output file: %s\n", optarg);
@@ -210,7 +210,7 @@ int main(int argc, char *const argv[])
       case 'D':
         // Partial File output
         if (!(pfKey = fopen(optarg, "w"))) {
-          fprintf(stderr, "Cannot open: %s, exiting\n", optarg);
+          fprintf(stderr, "Impossible d'ouvrir: %s, fin\n", optarg);
           exit(EXIT_FAILURE);
         }
         // fprintf(stdout, "Output file: %s\n", optarg);
@@ -225,7 +225,7 @@ int main(int argc, char *const argv[])
   }
 
   if (!pfDump) {
-    ERR("parameter -O is mandatory");
+    ERR("Le paramètre -O est obligatoire");
     exit(EXIT_FAILURE);
   }
 
@@ -266,13 +266,13 @@ int main(int argc, char *const argv[])
     nfc_perror(r.pdi, "nfc_initiator_select_passive_target");
     goto error;
   } else if (tag_count == 0) {
-    ERR("No tag found.");
+    ERR("Pas de tag NFC.");
     goto error;
   }
 
   // Test if a compatible MIFARE tag is used
   if (((t.nt.nti.nai.btSak & 0x08) == 0) && (t.nt.nti.nai.btSak != 0x01)) {
-    ERR("only Mifare Classic is supported");
+    ERR("Seuls les Mifare Classic sont supportés");
     goto error;
   }
 
@@ -286,41 +286,41 @@ int main(int argc, char *const argv[])
     case 0x08:
     case 0x88:
       if (get_rats_is_2k(t, r)) {
-          printf("Found Mifare Plus 2k tag\n");
+          printf("Mifare Plus 2k trouvé\n");
           t.num_sectors = NR_TRAILERS_2k;
           t.num_blocks = NR_BLOCKS_2k;
       } else {
-        printf("Found Mifare Classic 1k tag\n");
+        printf("Mifare Classic 1k trouvé\n");
         t.num_sectors = NR_TRAILERS_1k;
         t.num_blocks = NR_BLOCKS_1k;
       }
       break;
     case 0x09:
-      printf("Found Mifare Classic Mini tag\n");
+      printf("Mifare Classic Mini trouvé\n");
       t.num_sectors = NR_TRAILERS_MINI;
       t.num_blocks = NR_BLOCKS_MINI;
       break;
     case 0x18:
-      printf("Found Mifare Classic 4k tag\n");
+      printf("Mifare Classic 4k trouvé\n");
       t.num_sectors = NR_TRAILERS_4k;
       t.num_blocks = NR_BLOCKS_4k;
       break;
     default:
-      ERR("Cannot determine card type from SAK");
+      ERR("Impossible de déterminer le type de carte à partir de ce SAK");
       goto error;
   }
 
   t.sectors = (void *) calloc(t.num_sectors, sizeof(sector));
   if (t.sectors == NULL) {
-    ERR("Cannot allocate memory for t.sectors");
+    ERR("Impossible d'allouer la mémoire pour t.sectors");
     goto error;
   }
   if ((pk = (void *) malloc(sizeof(pKeys))) == NULL) {
-    ERR("Cannot allocate memory for pk");
+    ERR("Impossible d'allouer la mémoire pour pk");
     goto error;
   }
   if ((bk = (void *) malloc(sizeof(bKeys))) == NULL) {
-    ERR("Cannot allocate memory for bk");
+    ERR("Impossible d'allouer la mémoire pour bk");
     goto error;
   } else {
     bk->brokenKeys = NULL;
@@ -329,7 +329,7 @@ int main(int argc, char *const argv[])
 
   d.distances = (void *) calloc(d.num_distances, sizeof(uint32_t));
   if (d.distances == NULL) {
-    ERR("Cannot allocate memory for t.distances");
+    ERR("Impossible d'allouer la mémoire pour t.distances");
     goto error;
   }
 
@@ -340,8 +340,8 @@ int main(int argc, char *const argv[])
 
   print_nfc_target(&t.nt, true);
 
-  fprintf(stdout, "\nTry to authenticate to all sectors with default keys...\n");
-  fprintf(stdout, "Symbols: '.' no key found, '/' A key found, '\\' B key found, 'x' both keys found\n");
+  fprintf(stdout, "\nTentative de dump de tous les secteurs avec les clés par défaut...\n");
+  fprintf(stdout, "Symbols: '.' pas de clé trouvé, '/' clé A trouvé, '\\' clé B trouvé, 'x' deux clés trouvés\n");
   // Set the authentication information (uid)
   memcpy(mp.mpa.abtAuthUid, t.nt.nti.nai.abtUid + t.nt.nti.nai.szUidLen - 4, sizeof(mp.mpa.abtAuthUid));
   // Iterate over all keys (n = number of keys)
@@ -444,24 +444,24 @@ int main(int argc, char *const argv[])
   fprintf(stdout, "\n");
   for (i = 0; i < (t.num_sectors); ++i) {
     if(t.sectors[i].foundKeyA){
-      fprintf(stdout, "Sector %02d - Found   Key A: %012llx ", i, bytes_to_num(t.sectors[i].KeyA, sizeof(t.sectors[i].KeyA)));
+      fprintf(stdout, "Secteur %02d - Clé A   Trouvée: %012llx ", i, bytes_to_num(t.sectors[i].KeyA, sizeof(t.sectors[i].KeyA)));
       memcpy(&knownKey, t.sectors[i].KeyA, 6);
       knownKeyLetter = 'A';
       knownSector = i;
     }
     else{
-      fprintf(stdout, "Sector %02d - Unknown Key A               ", i);
+      fprintf(stdout, "Sector %02d - Clé A Inconnue               ", i);
       unknownSector = i;
       unknownKeyLetter = 'A';
     }
     if(t.sectors[i].foundKeyB){
-      fprintf(stdout, "Found   Key B: %012llx\n", bytes_to_num(t.sectors[i].KeyB, sizeof(t.sectors[i].KeyB)));
+      fprintf(stdout, "Clé B   Trouvée: %012llx\n", bytes_to_num(t.sectors[i].KeyB, sizeof(t.sectors[i].KeyB)));
       knownKeyLetter = 'B';
       memcpy(&knownKey, t.sectors[i].KeyB, 6);
       knownSector = i;
     }
     else{
-      fprintf(stdout, "Unknown Key B\n");
+      fprintf(stdout, "Clé B Inconnue\n");
       unknownSector = i;
       unknownKeyLetter = 'B';
     }
@@ -493,18 +493,18 @@ int main(int argc, char *const argv[])
             mf_anticollision(t, r);
           } else {
             // Save all information about successfull authentization
-            printf("Sector: %d, type %c\n", j, (dumpKeysA ? 'A' : 'B'));
+            printf("Secteur: %d, type %c\n", j, (dumpKeysA ? 'A' : 'B'));
             if (dumpKeysA) {
               memcpy(t.sectors[j].KeyA, mp.mpa.abtKey, sizeof(mp.mpa.abtKey));
               t.sectors[j].foundKeyA = true;
               // if we need KeyB for this sector it should be revealed by a data read with KeyA
               if (!t.sectors[j].foundKeyB) {
                 if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_READ, t.sectors[j].trailer, &mtmp)) >= 0) {
-                  fprintf(stdout, "  Data read with Key A revealed Key B: [%012llx] - checking Auth: ", bytes_to_num(mtmp.mpd.abtData + 10, sizeof(mtmp.mpa.abtKey)));
+                  fprintf(stdout, "  Les données lues avec la clé A ont révélé la clé B: [%012llx] - checking Auth: ", bytes_to_num(mtmp.mpd.abtData + 10, sizeof(mtmp.mpa.abtKey)));
                   memcpy(mtmp.mpa.abtKey, mtmp.mpd.abtData + 10, sizeof(mtmp.mpa.abtKey));
                   memcpy(mtmp.mpa.abtAuthUid, t.nt.nti.nai.abtUid + t.nt.nti.nai.szUidLen - 4, sizeof(mtmp.mpa.abtAuthUid));
                   if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_AUTH_B, t.sectors[j].trailer, &mtmp)) < 0) {
-                    fprintf(stdout, "Failed!\n");
+                    fprintf(stdout, "Echec!\n");
                     mf_configure(r.pdi);
                     mf_anticollision(t, r);
                   } else {
@@ -527,7 +527,7 @@ int main(int argc, char *const argv[])
               memcpy(t.sectors[j].KeyB, mp.mpa.abtKey, sizeof(mp.mpa.abtKey));
               t.sectors[j].foundKeyB = true;
             }
-            fprintf(stdout, "  Found Key: %c [%012llx]\n", (dumpKeysA ? 'A' : 'B'),
+            fprintf(stdout, "  Clé Trouvée: %c [%012llx]\n", (dumpKeysA ? 'A' : 'B'),
                     bytes_to_num(mp.mpa.abtKey, 6));
             mf_configure(r.pdi);
             mf_anticollision(t, r);
@@ -552,7 +552,7 @@ int main(int argc, char *const argv[])
                 return 9;
           }
 
-          printf("Sector: %d, type %c, probe %d, distance %d ", j, (dumpKeysA ? 'A' : 'B'), k, d.median);
+          printf("Secteur: %d, type %c, probe %d, distance %d ", j, (dumpKeysA ? 'A' : 'B'), k, d.median);
           // Configure device to the previous state
           mf_configure(r.pdi);
           mf_anticollision(t, r);
@@ -599,16 +599,16 @@ int main(int argc, char *const argv[])
                   memcpy(t.sectors[j].KeyB, mp.mpa.abtKey, sizeof(mp.mpa.abtKey));
                   t.sectors[j].foundKeyB = true;
                 }
-                fprintf(stdout, "  Found Key: %c [%012llx]\n", (dumpKeysA ? 'A' : 'B'),
+                fprintf(stdout, "  Clé Trouvée: %c [%012llx]\n", (dumpKeysA ? 'A' : 'B'),
                         bytes_to_num(mp.mpa.abtKey, 6));
                 // if we need KeyB for this sector, it should be revealed by a data read with KeyA
                 if (!t.sectors[j].foundKeyB) {
                   if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_READ, t.sectors[j].trailer, &mtmp)) >= 0) {
-                    fprintf(stdout, "  Data read with Key A revealed Key B: [%012llx] - checking Auth: ", bytes_to_num(mtmp.mpd.abtData + 10, sizeof(mtmp.mpa.abtKey)));
+                    fprintf(stdout, "  Les données lues avec la clé A ont révélé la clé B: [%012llx] - checking Auth: ", bytes_to_num(mtmp.mpd.abtData + 10, sizeof(mtmp.mpa.abtKey)));
                     memcpy(mtmp.mpa.abtKey, mtmp.mpd.abtData + 10, sizeof(mtmp.mpa.abtKey));
                     memcpy(mtmp.mpa.abtAuthUid, t.nt.nti.nai.abtUid + t.nt.nti.nai.szUidLen - 4, sizeof(mtmp.mpa.abtAuthUid));
                     if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_AUTH_B, t.sectors[j].trailer, &mtmp)) < 0) {
-                      fprintf(stdout, "Failed!\n");
+                      fprintf(stdout, "Echec!\n");
                       mf_configure(r.pdi);
                       mf_anticollision(t, r);
                     } else {
@@ -640,7 +640,7 @@ int main(int argc, char *const argv[])
         }
         // We haven't found any key, exiting
         if ((dumpKeysA && !t.sectors[j].foundKeyA) || (!dumpKeysA && !t.sectors[j].foundKeyB)) {
-          ERR("No success, maybe you should increase the probes");
+          ERR("Echec, essayez peut-être d'augmenter le nombre de Probes");
           goto error;
         }
       }
@@ -651,7 +651,7 @@ int main(int argc, char *const argv[])
 
   for (i = 0; i < (t.num_sectors); ++i) {
     if ((dumpKeysA && !t.sectors[i].foundKeyA) || (!dumpKeysA && !t.sectors[i].foundKeyB)) {
-      fprintf(stdout, "\nTry again, there are still some encrypted blocks\n");
+      fprintf(stdout, "\nEssayez encore,il y a encore des blocs cryptés\n");
       succeed = 0;
       break;
     }
@@ -659,7 +659,7 @@ int main(int argc, char *const argv[])
 
   if (succeed) {
     i = t.num_sectors; // Sector counter
-    fprintf(stdout, "Auth with all sectors succeeded, dumping keys to a file!\n");
+    fprintf(stdout, "Authentification de tous les secteurs réussite, création du fichier!\n");
     // Read all blocks
     for (block = t.num_blocks; block >= 0; block--) {
       trailer_block(block) ? i-- : i;
@@ -677,7 +677,7 @@ int main(int argc, char *const argv[])
         mf_anticollision(t, r);
       } else { // and Read
         if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_READ, block, &mp)) >= 0) {
-          fprintf(stdout, "Block %02d, type %c, key %012llx :", block, 'A', bytes_to_num(t.sectors[i].KeyA, 6));
+          fprintf(stdout, "Bloc %02d, type %c, clé %012llx :", block, 'A', bytes_to_num(t.sectors[i].KeyA, 6));
           print_hex(mp.mpd.abtData, 16);
           mf_configure(r.pdi);
           mf_select_tag(r.pdi, &(t.nt));
@@ -700,7 +700,7 @@ int main(int argc, char *const argv[])
             mf_anticollision(t, r);
           } else { // and Read
             if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_READ, block, &mp)) >= 0) {
-              fprintf(stdout, "Block %02d, type %c, key %012llx :", block, 'B', bytes_to_num(t.sectors[i].KeyB, 6));
+              fprintf(stdout, "Bloc %02d, type %c, key %012llx :", block, 'B', bytes_to_num(t.sectors[i].KeyB, 6));
               print_hex(mp.mpd.abtData, 16);
               mf_configure(r.pdi);
               mf_select_tag(r.pdi, &(t.nt));
@@ -712,7 +712,7 @@ int main(int argc, char *const argv[])
               }
               mf_configure(r.pdi);
               mf_anticollision(t, r);
-              // ERR ("Error: Read B");
+              // ERR ("Erreur: Read B");
             }
           }
         }
@@ -729,7 +729,7 @@ int main(int argc, char *const argv[])
     // Finally save all keys + data to file
     uint16_t dump_size = (t.num_blocks + 1) * 16;
     if (fwrite(&mtDump, 1, dump_size, pfDump) != dump_size) {
-      fprintf(stdout, "Error, cannot write dump\n");
+      fprintf(stdout, "Erreur, impossible d'écrire le dump\n");
       fclose(pfDump);
       goto error;
     }
@@ -755,27 +755,27 @@ error:
 
 void usage(FILE *stream, int errno)
 {
-  fprintf(stream, "Usage: mfoc [-h] [-k key] [-f file] ... [-P probnum] [-T tolerance] [-O output]\n");
+  fprintf(stream, "Utilisation: mfoc [-h] [-k key] [-f file] ... [-P probnum] [-T tolerance] [-O output]\n");
   fprintf(stream, "\n");
-  fprintf(stream, "  h     print this help and exit\n");
+  fprintf(stream, "  h     affiche cette aide et quitte\n");
 //    fprintf(stream, "  B     instead of 'A' dump 'B' keys\n");
-  fprintf(stream, "  k     try the specified key in addition to the default keys\n");
-  fprintf(stream, "  f     parses a file of keys to add in addition to the default keys \n");    
+  fprintf(stream, "  k     test cette clé en plus des clés par défaut\n");
+  fprintf(stream, "  f     ajoute un ficher de clés en plus des clés par défaut \n");    
 //    fprintf(stream, "  D     number of distance probes, default is 20\n");
 //    fprintf(stream, "  S     number of sets with keystreams, default is 5\n");
-  fprintf(stream, "  P     number of probes per sector, instead of default of 20\n");
-  fprintf(stream, "  T     nonce tolerance half-range, instead of default of 20\n        (i.e., 40 for the total range, in both directions)\n");
-//    fprintf(stream, "  s     specify the list of sectors to crack, for example -s 0,1,3,5\n");
-  fprintf(stream, "  O     file in which the card contents will be written (REQUIRED)\n");
-  fprintf(stream, "  D     file in which partial card info will be written in case PRNG is not vulnerable\n");
+  fprintf(stream, "  P     nombre de Probes par secteur, 20 par défaut\n");
+  fprintf(stream, "  T     nonce tolerance half-range, 20 par défaut\n        (i.e., 40 for the total range, dans les deux sens)\n");
+//    fprintf(stream, "  s     specify the list of sectors to crack, for exemple -s 0,1,3,5\n");
+  fprintf(stream, "  O     fichier où sera écrit le Dump (REQUIS)\n");
+  fprintf(stream, "  D     fichier où les informations partielles seront écrites en cas d'échec\n");
   fprintf(stream, "\n");
-  fprintf(stream, "Example: mfoc -O mycard.mfd\n");
-  fprintf(stream, "Example: mfoc -k ffffeeeedddd -O mycard.mfd\n");
-  fprintf(stream, "Example: mfoc -f keys.txt -O mycard.mfd\n");
-  fprintf(stream, "Example: mfoc -P 50 -T 30 -O mycard.mfd\n");
+  fprintf(stream, "Exemple: mfoc -O mycard.mfd\n");
+  fprintf(stream, "Exemple: mfoc -k ffffeeeedddd -O mycard.mfd\n");
+  fprintf(stream, "Exemple: mfoc -f keys.txt -O mycard.mfd\n");
+  fprintf(stream, "Exemple: mfoc -P 50 -T 30 -O mycard.mfd\n");
   fprintf(stream, "\n");
-  fprintf(stream, "This is mfoc version %s.\n", PACKAGE_VERSION);
-  fprintf(stream, "For more information, run: 'man mfoc'.\n");
+  fprintf(stream, "Version de mfoc %s.\n", PACKAGE_VERSION);
+  fprintf(stream, "Pour plus d'information, lancer: 'man mfoc'.\n");
   exit(errno);
 }
 
@@ -784,12 +784,12 @@ void mf_init(mfreader *r)
   // Connect to the first NFC device
   nfc_init(&context);
   if (context == NULL) {
-    ERR("Unable to init libnfc (malloc)");
+    ERR("Impossible d'initier libnfc (malloc)");
     exit(EXIT_FAILURE);
   }
   r->pdi = nfc_open(context, NULL);
   if (!r->pdi) {
-    printf("No NFC device found.\n");
+    printf("Aucun périphérique NFC trouvé.\n");
     exit(EXIT_FAILURE);
   }
 }
@@ -829,7 +829,7 @@ void mf_configure(nfc_device *pdi)
 void mf_select_tag(nfc_device *pdi, nfc_target *pnt)
 {
   if (nfc_initiator_select_passive_target(pdi, nm, NULL, 0, pnt) < 0) {
-    ERR("Unable to connect to the MIFARE Classic tag");
+    ERR("Impossible de se connecter à la MIFARE Classic tag");
     nfc_close(pdi);
     nfc_exit(context);
     exit(EXIT_FAILURE);
@@ -855,16 +855,16 @@ int find_exploit_sector(mftag t)
     }
   }
   if (!interesting) {
-    fprintf(stdout, "\nWe have all sectors encrypted with the default keys..\n\n");
+    fprintf(stdout, "\nTous les secteurs sont encryptés avec les clés par défaut..\n\n");
     return -1;
   }
   for (i = 0; i < t.num_sectors; i++) {
     if ((t.sectors[i].foundKeyA) || (t.sectors[i].foundKeyB)) {
-      fprintf(stdout, "\n\nUsing sector %02d as an exploit sector\n", i);
+      fprintf(stdout, "\n\nUtilisation du secteur %02d comme secteur d'exploitation\n", i);
       return i;
     }
   }
-  ERR("\n\nNo sector encrypted with the default key has been found, exiting..");
+  ERR("\n\nAucun secteur chiffré avec les clés par défaut, fin..");
   exit(EXIT_FAILURE);
 }
 
@@ -872,7 +872,7 @@ void mf_anticollision(mftag t, mfreader r)
 {
   if (nfc_initiator_select_passive_target(r.pdi, nm, NULL, 0, &t.nt) < 0) {
     nfc_perror(r.pdi, "nfc_initiator_select_passive_target");
-    ERR("Tag has been removed");
+    ERR("La carte a été retirée");
     exit(EXIT_FAILURE);
   }
 }
@@ -904,7 +904,7 @@ get_rats_is_2k(mftag t, mfreader r)
   }
   // Reselect tag
   if (nfc_initiator_select_passive_target(r.pdi, nm, NULL, 0, &t.nt) <= 0) {
-    printf("Error: tag disappeared\n");
+    printf("Erreur: plus de carte\n");
     nfc_close(r.pdi);
     nfc_exit(context);
     exit(EXIT_FAILURE);
@@ -966,7 +966,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
   }
 
   if (nfc_initiator_transceive_bytes(r.pdi, Auth, 4, Rx, sizeof(Rx), 0) < 0) {
-    fprintf(stdout, "Error while requesting plain tag-nonce\n");
+    fprintf(stdout, "Erreur lors de la requête plain tag-nonce\n");
     exit(EXIT_FAILURE);
   }
 
@@ -1017,7 +1017,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
   // print_hex_par(ArEnc, 64, ArEncPar);
   int res;
   if (((res = nfc_initiator_transceive_bits(r.pdi, ArEnc, 64, ArEncPar, Rx, sizeof(Rx), RxPar)) < 0) || (res != 32)) {
-    ERR("Reader-answer transfer error, exiting..");
+    ERR("Erreur pendant le transfert avec le lecteur, fin..");
     exit(EXIT_FAILURE);
   }
 
@@ -1028,7 +1028,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
   // Decrypt the tag answer and verify that suc3(Nt) is At
   Nt = prng_successor(Nt, 32);
   if (!((crypto1_word(pcs, 0x00, 0) ^ bytes_to_num(Rx, 4)) == (Nt & 0xFFFFFFFF))) {
-    ERR("[At] is not Suc3(Nt), something is wrong, exiting..");
+    ERR("[At] n'est pas Suc3(Nt), il y a une erreur, fin..");
     exit(EXIT_FAILURE);
   }
   // fprintf(stdout, "Authentication completed.\n\n");
@@ -1046,7 +1046,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
 
       // Sending the encrypted Auth command
       if (nfc_initiator_transceive_bits(r.pdi, AuthEnc, 32, AuthEncPar, Rx, sizeof(Rx), RxPar) < 0) {
-        fprintf(stdout, "Error requesting encrypted tag-nonce\n");
+        fprintf(stdout, "Erreur lors de la requête du tag-nonce chiffré\n");
         exit(EXIT_FAILURE);
       }
 
@@ -1060,7 +1060,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
 
       // Make sure the card is using the known PRNG
       if (! validate_prng_nonce(NtLast)) {
-           printf("Card is not vulnerable to nested attack\n");
+           printf("La carte n'est pas vulnérable aux attaques imbriquées\n");
            return -99999;
       }
       // Save the determined nonces distance
@@ -1079,12 +1079,12 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
       }
       nfc_device_set_property_bool(r.pdi, NP_HANDLE_PARITY, false);
       if (((res = nfc_initiator_transceive_bits(r.pdi, ArEnc, 64, ArEncPar, Rx, sizeof(Rx), RxPar)) < 0) || (res != 32)) {
-        ERR("Reader-answer transfer error, exiting..");
+        ERR("Erreur pendant le transfert avec le lecteur, fin..");
         exit(EXIT_FAILURE);
       }
       Nt = prng_successor(Nt, 32);
       if (!((crypto1_word(pcs, 0x00, 0) ^ bytes_to_num(Rx, 4)) == (Nt & 0xFFFFFFFF))) {
-        ERR("[At] is not Suc3(Nt), something is wrong, exiting..");
+        ERR("[At] n'est pas Suc3(Nt), il y a une erreur, fin..");
         exit(EXIT_FAILURE);
       }
     } // Next auth probe
@@ -1156,7 +1156,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
             // fprintf(stdout, "New chunk by %d, sizeof %lu\n", kcount, pk->size * sizeof(uint64_t));
             pk->possibleKeys = (uint64_t *) realloc((void *)pk->possibleKeys, pk->size * sizeof(uint64_t));
             if (pk->possibleKeys == NULL) {
-              ERR("Memory allocation error for pk->possibleKeys");
+              ERR("Erreur d'allocation de mémoire pour pk->possibleKeys");
               exit(EXIT_FAILURE);
             }
           }
@@ -1172,7 +1172,7 @@ int mf_enhanced_auth(int e_sector, int a_sector, mftag t, mfreader r, denonce *d
     if (kcount != 0) {
       pk->size = --kcount;
       if ((pk->possibleKeys = (uint64_t *) realloc((void *)pk->possibleKeys, pk->size * sizeof(uint64_t))) == NULL) {
-        ERR("Memory allocation error for pk->possibleKeys");
+        ERR("Erreur d'allocation de mémoire pour pk->possibleKeys");
         exit(EXIT_FAILURE);
       }
     }
@@ -1217,7 +1217,7 @@ countKeys *uniqsort(uint64_t *possibleKeys, uint32_t size)
 
   our_counts = calloc(size, sizeof(countKeys));
   if (our_counts == NULL) {
-    ERR("Memory allocation error for our_counts");
+    ERR("Erreur d'allocation de mémoire pour our_counts");
     exit(EXIT_FAILURE);
   }
 
