@@ -21,17 +21,17 @@ if [ -f "/etc/debian_version" ]; then
 fi
 
 # install MFOC
-[ -d mfoc ] || git clone https://github.com/nfc-tools/mfoc.git
-(
-    cd mfoc || exit 1
-    git reset --hard
-    git clean -dfx
-    # tested against commit 9d9f01fb
-    autoreconf -vfi
-    ./configure
-    make
-    sudo make install
-)
+#[ -d mfoc ] || git clone https://github.com/nfc-tools/mfoc.git
+#(
+#    cd mfoc || exit 1
+#    git reset --hard
+#    git clean -dfx
+#    # tested against commit 9d9f01fb
+#    autoreconf -vfi
+#    ./configure
+#    make
+#    sudo make install
+#)
 
 # install Hardnested Attack Tool
 [ -d crypto1_bs ] || git clone https://github.com/aczid/crypto1_bs
