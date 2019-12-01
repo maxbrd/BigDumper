@@ -123,7 +123,7 @@ done
 rm -f "$TMPFILE_UNK" "0x${myUID}_"*".txt" "$TMPFILE_FND"
 if [ $mfocResult -eq 0 ]; then
     echo -e "\n\nDump placé dan sle fichier: $TMPFILE_MFD"
-    if ask "voulez-vous cloner la carte? Si OUI, placez la nouvelle carte sur le copieur et appuyez sur Y"; then
+    if ask "Voulez-vous cloner la carte? Si OUI, placez la nouvelle carte sur le copieur et appuyez sur Y"; then
          nfc-mfclassic W a $TMPFILE_MFD
     fi
 else
