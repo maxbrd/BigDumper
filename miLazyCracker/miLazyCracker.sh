@@ -46,11 +46,14 @@ TMPFILE_MFD="mfc_${myUID}_dump.dmp"
 TMPFILE_UNK="mfc_${myUID}_unknownMfocSectorInfo.txt"
 TMPFILE_FND="mfc_${myUID}_foundKeys.txt"
 
+echo "Comment voulez-vous appeler le dump?"
+read TMPFILE_MFD
+clear
 cd /root/BigDumper/dump
 if [ -f "$TMPFILE_FND" ]; then
-    mfoc -f "$TMPFILE_FND" -O "$TMPFILE_MFD"  -D "$TMPFILE_UNK"
+    mfoc -f "$TMPFILE_FND" -O "$TMPFILE_MFD.dmp"  -D "$TMPFILE_UNK"
 else
-    mfoc -O "$TMPFILE_MFD" -D "$TMPFILE_UNK"
+    mfoc -O "$TMPFILE_MFD.dmp" -D "$TMPFILE_UNK"
 fi
 mfocResult=$?
 prngNotVulnerable=9
