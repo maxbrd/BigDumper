@@ -26,6 +26,7 @@ echo $YS"3) "$VS"Ecrire sur la carte"$NS
 echo $YS"4) "$VS"Nfc-list"$NS
 echo $YS"5) "$VS"Editer un dump"$NS
 echo $YS"6) "$VS"Différences des dumps"$NS
+echo $YS"7) "$VS"Supprimer un dumps"$NS
 echo ""
 echo $YS"00) QUITTER"$NS
 echo ""
@@ -33,7 +34,7 @@ read faire
 clear
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ] ; do  #Boucle d'erreur
 		clear
 		echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP"$NS
 		echo ""
@@ -45,6 +46,7 @@ until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire =
 		echo $YS"4) "$VS"Nfc-list"$NS
 		echo $YS"5) "$VS"Editer un dump"$NS
 		echo $YS"6) "$VS"Différences des dumps"$NS
+		echo $YS"7) "$VS"Supprimer un dumps"$NS
 		echo ""
 		echo $YS"00) QUITTER"
 		echo $RS"Erreur de choix, merci de recommencer."$NS
@@ -71,7 +73,7 @@ echo ""
 read fichier
 if [ $fichier = 01 ] ; then break ; fi
 clear
-if [ -z "$cle" ]  
+if [ -z "$cle" ]  #Si la variable cle est vide alors
 	then	
 	mfoc -P 500 -O /root/BigDumper/dump/$fichier.dmp
 	else
@@ -197,6 +199,37 @@ if [ $dump2 = 01 ] ; then break ; fi
 clear
 			
 diff $dump1.dmp $dump2.dmp
+cd /root
+}
+fonction_supp () {
+until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
+	clear
+	echo $YS"	SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+	echo ""
+	cd /root/BigDumper/dump
+	ls
+	echo $RS"Choisir le dump à supprimer (sans extension) ou faites 01 pour quitter:"$NS
+	echo ""
+	read supp
+	if [ $supp = 01 ] ; then break ; fi
+	clear
+	echo $YS"	SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+	echo ""
+	ls
+	echo $RS"Etes-vous sûr de vouloir supprimer le dump "$VS"$supp "$RS"? oui/non:"$NS
+	read rep
+done
+if [ $rep = 01 ] ; then break ; fi
+clear
+if [ $rep = oui ] 
+	then
+		rm "$supp".dmp
+elif [ $rep = non ]
+	then
+	break
+elif [ $supp = 01 ] ; then break ; fi
+cd /root
+rep=""
 }
 
 ##CODE##
@@ -230,6 +263,10 @@ elif [ $faire = 5 ]
 elif [ $faire = 6 ]
 	then
 		fonction_diff		
+
+elif [ $faire = 7 ]
+	then
+		fonction_supp
 		
 elif [ $faire = 00 ]
 	then
