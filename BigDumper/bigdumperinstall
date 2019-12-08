@@ -2,6 +2,7 @@
 #Big_Dumper_Install
 
 #installation des pré-requis
+apt-get update
 apt-get install git binutils make csh g++ sed gawk autoconf automake autotools-dev libglib2.0-dev libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool
 
 #installation de miLazyCracker

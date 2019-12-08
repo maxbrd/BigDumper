@@ -223,6 +223,8 @@ diff $dump1.dmp $dump2.dmp
 cd /root
 }
 fonction_supp () {
+supp=""
+rep=""
 until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
 	clear
 	echo $YS"	SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
@@ -251,7 +253,6 @@ elif [ $rep = non ]
 	break
 elif [ $supp = 01 ] ; then break ; fi
 cd /root
-rep=""
 }
 fonction_UID () {
 UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
