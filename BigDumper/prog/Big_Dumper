@@ -16,7 +16,7 @@ VS="\033[1;32m" #vert gras
 ##FONCTIONS##
 fonction_home () {
 clear
-echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP"$NS
+echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP		VOTRE UID EST: $UID "$NS
 echo ""
 echo $RS"Que souhaitez-vous faire?"$NS
 echo ""
@@ -29,15 +29,16 @@ echo $YS"6) "$VS"Editer un dump"$NS
 echo $YS"7) "$VS"Différences des dumps"$NS
 echo $YS"8) "$VS"Supprimer un dumps"$NS
 echo ""
+echo $YS"r) "$VS"Recharger l'UID"
 echo $YS"00) QUITTER"$NS
 echo ""
 read faire
 clear
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = r ] ; do  #Boucle d'erreur
 		clear
-		echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP"$NS
+		echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP		VOTRE UID EST: $UID "$NS
 		echo ""
 		echo $RS"Que souhaitez-vous faire?"$NS
 		echo ""
@@ -50,6 +51,7 @@ until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire =
 		echo $YS"7) "$VS"Différences des dumps"$NS
 		echo $YS"8) "$VS"Supprimer un dumps"$NS
 		echo ""
+		echo $YS"r) "$VS"Recharger l'UID"
 		echo $YS"00) QUITTER"
 		echo $RS"Erreur de choix, merci de recommencer."$NS
 		echo ""
@@ -260,9 +262,14 @@ UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
 
 ##CODE##
 
+clear
+printf '\033]2;BigDumper\a'
+echo "CHARGEMENT DE VOTRE UID EN COURS..."
+fonction_UID
+clear
+
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
-printf '\033]2;BigDumper\a'
 fonction_home
 fonction_erreur	
 		
@@ -298,6 +305,13 @@ elif [ $faire = 8 ]
 	then
 		fonction_supp
 		
+elif [ $faire = r ]
+	then
+		clear
+		echo "CHARGEMENT DE VOTRE UID EN COURS..."
+		fonction_UID
+		clear		
+		break 1
 elif [ $faire = 00 ]
 	then
 		exit
