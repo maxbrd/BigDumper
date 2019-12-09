@@ -23,7 +23,7 @@ echo ""
 echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
 echo $YS"2) "$VS"Dumper un carte avec miLazyCracker (peut être long!)"$NS
 echo $YS"3) "$VS"Ecrire sur la carte"$NS
-echo $YS"4) "$VS"Trasnférer automatiquement sur la carte"$NS
+echo $YS"4) "$VS"Transférer automatiquement sur la carte"$NS
 echo $YS"5) "$VS"Nfc-list"$NS
 echo $YS"6) "$VS"Editer un dump"$NS
 echo $YS"7) "$VS"Différences des dumps"$NS
@@ -31,30 +31,11 @@ echo $YS"8) "$VS"Supprimer un dumps"$NS
 echo ""
 echo $YS"r) "$VS"Recharger l'UID"
 echo $YS"00) QUITTER"$NS
-echo ""
-read faire
-clear
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = r ] ; do  #Boucle d'erreur
-		clear
-		echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP		VOTRE UID EST: $UID "$NS
-		echo ""
-		echo $RS"Que souhaitez-vous faire?"$NS
-		echo ""
-		echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
-		echo $YS"2) "$VS"Dumper un carte avec miLazyCracker (peut être long!)"$NS
-		echo $YS"3) "$VS"Ecrire sur la carte"$NS
-		echo $YS"4) "$VS"Trasnférer automatiquement sur la carte"$NS
-		echo $YS"5) "$VS"Nfc-list"$NS
-		echo $YS"6) "$VS"Editer un dump"$NS
-		echo $YS"7) "$VS"Différences des dumps"$NS
-		echo $YS"8) "$VS"Supprimer un dumps"$NS
-		echo ""
-		echo $YS"r) "$VS"Recharger l'UID"
-		echo $YS"00) QUITTER"
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = r ] ; do  #Boucle d'erreur
+		fonction_home
 		echo $RS"Erreur de choix, merci de recommencer."$NS
-		echo ""
 		read faire
 		clear
 done
@@ -87,6 +68,7 @@ if [ -z "$cle" ]  #Si la variable cle est vide alors
 	fonction_UID
 	cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
 fi
+sed -i '1i'$fichier'='$UID'' /root/BigDumper/dump/NePasSupprimer/uid.txt
 }
 fonction_transfere () {
 echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
@@ -202,6 +184,8 @@ echo $YS"	EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			if [ $hex = 01 ] ; then break ; fi
 			clear
 			hexedit /root/BigDumper/dump/$hex.dmp
+			nomuid=$(sed -n '/'$hex'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+			cp /root/BigDumper/dump/$hex.dmp /root/BigDumper/dump/NePasSupprimer/$nomuid.dmp
 }
 fonction_diff () {
 echo $YS"	DIFF	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
@@ -248,7 +232,11 @@ if [ $rep = 01 ] ; then break ; fi
 clear
 if [ $rep = oui ] 
 	then
+		nomuid=$(sed -n '/'$supp'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+		rm /root/BigDumper/dump/NePasSupprimer/"$nomuid".dmp
 		rm "$supp".dmp
+		sed  -i "/${supp}=/d" /root/BigDumper/dump/NePasSupprimer/uid.txt #supprime l'uid de la base de données
+		clear
 		echo $VS"$supp "$YS"a bien été supprimé "
 elif [ $rep = non ]
 	then
@@ -258,6 +246,12 @@ cd /root
 }
 fonction_UID () {
 UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
+}
+fonction_nom () {
+uidnom=$(sed -n '/'$UID'/s/=.*//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait le nom grace à l'UID
+}
+fonction_nomuid () {
+nomuid=$(sed -n '/'$NOM'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
 }
 
 ##CODE##
@@ -271,6 +265,9 @@ clear
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
 fonction_home
+echo ""
+read faire
+clear
 fonction_erreur	
 		
 if [ $faire = 1 ]
@@ -304,6 +301,18 @@ elif [ $faire = 7 ]
 elif [ $faire = 8 ]
 	then
 		fonction_supp
+
+#elif [ $faire = 9 ]
+#	then
+#		fonction_
+		
+#elif [ $faire = 10 ]
+#	then
+#		fonction_
+
+#elif [ $faire = 11 ]
+#	then
+#		fonction_		
 		
 elif [ $faire = r ]
 	then
