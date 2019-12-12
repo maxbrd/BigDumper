@@ -68,7 +68,7 @@ if [ -z "$cle" ]  #Si la variable cle est vide alors
 	fonction_UID
 	cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
 fi
-sed -i '1i'$fichier'='$UID'' /root/BigDumper/dump/NePasSupprimer/uid.txt
+sed -i '1i'$fichier'='$UID'' /root/BigDumper/dump/NePasSupprimer/uid.txt #Ajoute l'UID à la base de données
 }
 fonction_transfere () {
 echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
