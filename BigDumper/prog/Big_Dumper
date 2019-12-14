@@ -16,7 +16,8 @@ VS="\033[1;32m" #vert gras
 ##FONCTIONS##
 fonction_home () {
 clear
-echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP		VOTRE UID EST: $UID "$NS
+echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP      VOTRE UID EST: $RS$UID "$NS
+echo $VS"                                       IL CORRESPOND AU DUMP: $RS$uidnom "$NS
 echo ""
 echo $RS"Que souhaitez-vous faire?"$NS
 echo ""
@@ -51,7 +52,7 @@ read cle
 if [ $cle = 01 ] ; then break ; fi
 clear
 
-echo $YS"	MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo $YS"MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
 echo $RS"Nom du fichier:"$NS
 echo ""
@@ -71,7 +72,7 @@ fi
 sed -i '1i'$fichier'='$UID'' /root/BigDumper/dump/NePasSupprimer/uid.txt #Ajoute l'UID à la base de données
 }
 fonction_transfere () {
-echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
 
 echo $RS"Modifier l'UID? (y/n)"$NS
@@ -112,7 +113,7 @@ clear
 	fi
 }
 fonction_transfereAuto () {
-echo $YS"	TRANSFERE AUTOMATIQUE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo $YS"TRANSFERE AUTOMATIQUE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
 echo $RS"Placer le tag NFC sur le lecteur puis appuyer sur ENTREE"$NS
 read auto
@@ -174,7 +175,7 @@ clear
 nfc-list
 }
 fonction_hexedit () {
-echo $YS"	EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+echo $YS"EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			echo ""
 		
 			ls /root/BigDumper/dump
@@ -188,7 +189,7 @@ echo $YS"	EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			cp /root/BigDumper/dump/$hex.dmp /root/BigDumper/dump/NePasSupprimer/$nomuid.dmp
 }
 fonction_diff () {
-echo $YS"	DIFF	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+echo $YS"DIFF	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 echo ""
 
 cd /root/BigDumper/dump
@@ -213,7 +214,7 @@ supp=""
 rep=""
 until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
 	clear
-	echo $YS"	SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+	echo $YS"SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 	echo ""
 	cd /root/BigDumper/dump
 	ls
@@ -222,7 +223,7 @@ until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
 	read supp
 	if [ $supp = 01 ] ; then break ; fi
 	clear
-	echo $YS"	SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+	echo $YS"SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 	echo ""
 	ls
 	echo $RS"Etes-vous sûr de vouloir supprimer le dump "$VS"$supp "$RS"? oui/non:"$NS
@@ -247,8 +248,12 @@ cd /root
 fonction_UID () {
 UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
 }
-fonction_nom () {
+fonction_uidnom () {
 uidnom=$(sed -n '/'$UID'/s/=.*//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait le nom grace à l'UID
+if [ -z "$uidnom" ]
+	then
+	uidnom="AUNCUNE CORREPSONDANCE"
+fi
 }
 fonction_nomuid () {
 nomuid=$(sed -n '/'$NOM'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
@@ -260,6 +265,8 @@ clear
 printf '\033]2;BigDumper\a'
 echo "CHARGEMENT DE VOTRE UID EN COURS..."
 fonction_UID
+fonction_uidnom
+fonction_nomuid
 clear
 
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
@@ -319,6 +326,8 @@ elif [ $faire = r ]
 		clear
 		echo "CHARGEMENT DE VOTRE UID EN COURS..."
 		fonction_UID
+		fonction_uidnom
+		fonction_nomuid
 		clear		
 		break 1
 elif [ $faire = 00 ]
