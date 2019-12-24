@@ -356,7 +356,7 @@ int main(int argc, char *const argv[])
       memcpy(mp.mpa.abtKey, defaultKeys[key], sizeof(mp.mpa.abtKey));
       key++;
     }
-    fprintf(stdout, "[Key: %012llx] -> ", bytes_to_num(mp.mpa.abtKey, 6));
+    fprintf(stdout, "[Clé: %012llx] -> ", bytes_to_num(mp.mpa.abtKey, 6));
     fprintf(stdout, "[");
     i = 0; // Sector counter
     // Iterate over every block, where we haven't found a key yet
@@ -450,7 +450,7 @@ int main(int argc, char *const argv[])
       knownSector = i;
     }
     else{
-      fprintf(stdout, "Sector %02d - Clé A Inconnue               ", i);
+      fprintf(stdout, "Secteur %02d - Clé A   Inconnue              ", i);
       unknownSector = i;
       unknownKeyLetter = 'A';
     }
@@ -461,7 +461,7 @@ int main(int argc, char *const argv[])
       knownSector = i;
     }
     else{
-      fprintf(stdout, "Clé B Inconnue\n");
+      fprintf(stdout, "Clé B   Inconnue\n");
       unknownSector = i;
       unknownKeyLetter = 'B';
     }

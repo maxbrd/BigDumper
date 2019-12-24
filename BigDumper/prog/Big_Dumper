@@ -206,7 +206,13 @@ read dump2
 if [ $dump2 = 01 ] ; then break ; fi
 clear
 			
-diff $dump1.dmp $dump2.dmp
+dif=$(diff $dump1.dmp $dump2.dmp)
+if [ -z "$dif" ]  #Si la variable cle est vide alors
+	then
+	echo "Les fichiers sont identiques!"
+else
+	echo "Les fichiers $VS$dump1.dmp$NS et $VS$dump2.dmp$NS sont différents!"
+fi
 cd /root
 }
 fonction_supp () {
@@ -252,7 +258,7 @@ fonction_uidnom () {
 uidnom=$(sed -n '/'$UID'/s/=.*//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait le nom grace à l'UID
 if [ -z "$uidnom" ]
 	then
-	uidnom="AUNCUNE CORREPSONDANCE"
+	uidnom="AUNCUNE CORRESPONDANCE"
 fi
 }
 fonction_nomuid () {
