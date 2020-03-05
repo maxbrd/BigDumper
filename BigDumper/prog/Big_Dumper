@@ -2,7 +2,7 @@
 #Big Dumper
 
 ##VARIABLES##
-bon=n
+#bon=n
 a=1
 
 ##COULEURS##
@@ -29,47 +29,56 @@ echo $YS"5) "$VS"Nfc-list"$NS
 echo $YS"6) "$VS"Editer un dump"$NS
 echo $YS"7) "$VS"Différences des dumps"$NS
 echo $YS"8) "$VS"Supprimer un dumps"$NS
+echo $YS"9) "$VS"Vérifier les UID enregistrés"$NS
+#echo $YS"10) "$VS""$NS
+#echo $YS"11) "$VS""$NS
 echo ""
 echo $YS"r) "$VS"Recharger l'UID"
 echo $YS"00) QUITTER"$NS
 }
 fonction_erreur () {
 until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = r ] ; do  #Boucle d'erreur
-		fonction_home
-		echo $RS"Erreur de choix, merci de recommencer."$NS
-		read faire
-		clear
+	fonction_home
+	echo $RS"Erreur de choix, merci de recommencer."$NS
+	read faire
+	clear
 done
 }
 fonction_mfoc () {
-echo $YS"	MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+echo $YS"MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 echo ""
 
 ls /root/BigDumper/clé
 echo $RS"Choisir un fichier de Clé (mettre ""clé"" par défaut) sans extension sinon appuyer sur Entrée:"$NS
 echo ""
 read cle
-if [ $cle = 01 ] ; then break ; fi
-clear
-
-echo $YS"MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
-echo ""
-echo $RS"Nom du fichier:"$NS
-echo ""
-read fichier
-if [ $fichier = 01 ] ; then break ; fi
-clear
-if [ -z "$cle" ]  #Si la variable cle est vide alors
-	then	
-	mfoc -P 500 -O /root/BigDumper/dump/$fichier.dmp
-	fonction_UID
-	cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
+if [ "$cle" = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
+else 
+	clear
+	echo $YS"MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+	echo ""
+	echo $RS"Nom du fichier:"$NS
+	echo ""
+	read fichier
+	if [ "$fichier" = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
 	else
-	mfoc -P 500 -f /root/BigDumper/clé/$cle.txt -O /root/BigDumper/dump/$fichier.dmp
-	fonction_UID
-	cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
+		clear
+		if [ -z "$cle" ]  #Si la variable cle est vide alors
+		then	
+			mfoc -P 500 -O /root/BigDumper/dump/$fichier.dmp
+			fonction_UID
+			cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
+		else
+			mfoc -P 500 -f /root/BigDumper/clé/$cle.txt -O /root/BigDumper/dump/$fichier.dmp
+			fonction_UID
+			cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
+		fi
+		if [ "$UID" != "" ]  #Si la variable UID n'est pas vide alors
+		then
+			sed -i '1i'$fichier'='$UID'' /root/BigDumper/dump/NePasSupprimer/uid.txt #Ajoute l'UID à la base de données
+		fi
+	fi	
 fi
-sed -i '1i'$fichier'='$UID'' /root/BigDumper/dump/NePasSupprimer/uid.txt #Ajoute l'UID à la base de données
 }
 fonction_transfere () {
 echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
@@ -83,33 +92,36 @@ clear
 
 	if [ $choix = "y" ]
 		then
-			echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			echo ""
-		
 			ls /root/BigDumper/dump
 			echo $RS"Nom du dump à copier (sans extension):"$NS
 			echo ""
 			read nom
-			if [ $nom = 01 ] ; then break ; fi
-			clear
-			nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp 
-					
+			if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS 
+			else
+				clear
+				nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp 
+			fi		
 	elif [ $choix = "n" ]
 		then
-			echo $YS"	TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			echo ""
-		
 			ls /root/BigDumper/dump
 			echo $RS"Nom du dump à copier(sans extension):"$NS
 			echo ""
 			read nom
-			if [ $nom = 01 ] ; then break ; fi
-			echo $RS"Nom de l'ancien dump(sans extension):"$NS
-			echo ""
-			read ancien
-			if [ $ancien = 01 ] ; then break ; fi
-			clear
-			nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
+			if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
+			else
+				echo $RS"Nom de l'ancien dump(sans extension):"$NS
+				echo ""
+				read ancien
+				if [ $ancien = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
+				else
+					clear
+					nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
+				fi	
+			fi	
 	fi
 }
 fonction_transfereAuto () {
@@ -117,15 +129,17 @@ echo $YS"TRANSFERE AUTOMATIQUE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
 echo $RS"Placer le tag NFC sur le lecteur puis appuyer sur ENTREE"$NS
 read auto
-if [ $auto = 01 ] ; then break ; fi
-clear
-cd /root/BigDumper/dump/NePasSupprimer
-fonction_UID
-FICHIER_UID="${UID}.dmp"
-if [ -f $FICHIER_UID ] ; then
-nfc-mfclassic w B /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID
+if [ $auto = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
 else
-echo "Aucun fichier ne correspond!" ; fi
+	cd /root/BigDumper/dump/NePasSupprimer
+	fonction_UID
+	FICHIER_UID="${UID}.dmp"
+	if [ -f $FICHIER_UID ] ; then
+		nfc-mfclassic w B /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID
+	else
+		echo "Aucun fichier ne correspond!"
+	fi
+fi
 }
 fonction_milazy () {
 miLazyCracker
@@ -171,22 +185,22 @@ miLazyCracker
 #./libnfc_crypto1_crack <known key> <NumeroSecteurConnu[x]4(nbr de bloc)> <A|B> <BLOCK RECHERCHE (même que précédant)> <A|B>
 #}
 fonction_nfc_list () {
-clear
 nfc-list
 }
 fonction_hexedit () {
 echo $YS"EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
-			echo ""
-		
-			ls /root/BigDumper/dump
-			echo $RS"Nom du dump à éditer (sans extension):"$NS
-			echo ""
-			read hex
-			if [ $hex = 01 ] ; then break ; fi
-			clear
-			hexedit /root/BigDumper/dump/$hex.dmp
-			nomuid=$(sed -n '/'$hex'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
-			cp /root/BigDumper/dump/$hex.dmp /root/BigDumper/dump/NePasSupprimer/$nomuid.dmp
+echo ""		
+	ls /root/BigDumper/dump
+	echo $RS"Nom du dump à éditer (sans extension):"$NS
+	echo ""
+	read hex
+	if [ "$hex" = 01 ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS
+	else 
+		clear
+		hexedit /root/BigDumper/dump/$hex.dmp
+		nomuid=$(sed -n '/'$hex'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+		cp /root/BigDumper/dump/$hex.dmp /root/BigDumper/dump/NePasSupprimer/$nomuid.dmp
+	fi
 }
 fonction_diff () {
 echo $YS"DIFF	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
@@ -197,23 +211,23 @@ ls
 echo $RS"Choisir le premier fichier à comparer sans extension:"$NS
 echo ""
 read dump1
-if [ $dump1 = 01 ] ; then break ; fi
-
-echo ""
-echo $RS"Choisir le deuxième fichier à comparer sans extension:"$NS
-echo ""
-read dump2
-if [ $dump2 = 01 ] ; then break ; fi
-clear
-			
-dif=$(diff $dump1.dmp $dump2.dmp)
-if [ -z "$dif" ]  #Si la variable cle est vide alors
-	then
-	echo "Les fichiers sont identiques!"
+if [ $dump1 = 01 ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS
 else
-	echo "Les fichiers $VS$dump1.dmp$NS et $VS$dump2.dmp$NS sont différents!"
+	echo ""
+	echo $RS"Choisir le deuxième fichier à comparer sans extension:"$NS
+	echo ""
+	read dump2
+	if [ $dump2 = 01 ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS
+	else		
+		dif=$(diff $dump1.dmp $dump2.dmp)
+		if [ -z "$dif" ]  #Si la variable cle est vide alors
+			then
+			echo "Les fichiers sont identiques!"
+		else
+			echo "Les fichiers $VS$dump1.dmp$NS et $VS$dump2.dmp$NS sont différents!"
+		fi
+	fi	
 fi
-cd /root
 }
 fonction_supp () {
 supp=""
@@ -221,9 +235,8 @@ rep=""
 until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
 	clear
 	echo $YS"SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
-	echo ""
-	cd /root/BigDumper/dump
-	ls
+	echo "" 
+	ls /root/BigDumper/dump
 	echo $RS"Choisir le dump à supprimer (sans extension) ou faites 01 pour quitter:"$NS
 	echo ""
 	read supp
@@ -231,25 +244,22 @@ until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
 	clear
 	echo $YS"SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 	echo ""
-	ls
+	ls /root/BigDumper/dump
 	echo $RS"Etes-vous sûr de vouloir supprimer le dump "$VS"$supp "$RS"? oui/non:"$NS
 	read rep
 done
-if [ $rep = 01 ] ; then break ; fi
 clear
-if [ $rep = oui ] 
-	then
-		nomuid=$(sed -n '/'$supp'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
-		rm /root/BigDumper/dump/NePasSupprimer/"$nomuid".dmp
-		rm "$supp".dmp
-		sed  -i "/${supp}=/d" /root/BigDumper/dump/NePasSupprimer/uid.txt #supprime l'uid de la base de données
-		clear
-		echo $VS"$supp "$YS"a bien été supprimé "
-elif [ $rep = non ]
-	then
+if [ "$rep" = oui ] ; then
+	nomuid=$(sed -n '/'$supp'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+	rm /root/BigDumper/dump/NePasSupprimer/"$nomuid".dmp
+	rm "$supp".dmp
+	sed  -i "/${supp}=/d" /root/BigDumper/dump/NePasSupprimer/uid.txt #supprime l'uid de la base de données
+	clear
+	echo $VS"$supp "$YS"a bien été supprimé "
+elif [ "$rep" = non ] ; then
 	break
-elif [ $supp = 01 ] ; then break ; fi
-cd /root
+elif [ "$rep" = 01 ] ; then break ; echo $RS"Vous avez quitté!"$NS
+elif [ "$supp" = 01 ] ; then break ; echo $RS"Vous avez quitté!"$NS ; fi
 }
 fonction_UID () {
 UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
@@ -257,12 +267,15 @@ UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
 fonction_uidnom () {
 uidnom=$(sed -n '/'$UID'/s/=.*//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait le nom grace à l'UID
 if [ -z "$uidnom" ]
-	then
+then
 	uidnom="AUNCUNE CORRESPONDANCE"
 fi
 }
 fonction_nomuid () {
-nomuid=$(sed -n '/'$NOM'/s/.*=//p' /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+nomuid=$(sed -n "/'$NOM'/s/.*=//p" /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+}
+fonction_fichier_uid () {
+cat /root/BigDumper/dump/NePasSupprimer/uid.txt
 }
 
 ##CODE##
@@ -315,9 +328,9 @@ elif [ $faire = 8 ]
 	then
 		fonction_supp
 
-#elif [ $faire = 9 ]
-#	then
-#		fonction_
+elif [ $faire = 9 ]
+	then
+		fonction_fichier_uid
 		
 #elif [ $faire = 10 ]
 #	then
@@ -329,13 +342,13 @@ elif [ $faire = 8 ]
 		
 elif [ $faire = r ]
 	then
-		clear
 		echo "CHARGEMENT DE VOTRE UID EN COURS..."
 		fonction_UID
 		fonction_uidnom
 		fonction_nomuid
 		clear		
 		break 1
+		
 elif [ $faire = 00 ]
 	then
 		exit

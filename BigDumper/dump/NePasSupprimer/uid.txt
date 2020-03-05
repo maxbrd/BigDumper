@@ -1,3 +1,11 @@
+badgemaman=e565c15b
+badgepapa=40db1748
+badgemanon=cd89d92d
+test=01234567
+selfangers=9857da2a
+entreeangers=3d9e9f29
+etoilemartin2=32d24c5d
+etoilemartin=32d24c5d
 daltys-40257=6b80d0da
 D8=0b8f17aa
 NE_PAS_SUPPRIMER_CETTE_LIGNE

@@ -1,9 +1,11 @@
 #!/bin/sh
 #Big_Dumper_Install
 
+TERMINALTITLE="INSTALLATION DE TOUS LES MODULES DE BIGDUMPER"
 #installation des pré-requis
+apt-get clean
 apt-get update
-apt-get install git binutils make csh g++ sed gawk autoconf automake autotools-dev libglib2.0-dev libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool
+apt-get -y install git binutils make csh g++ sed gawk autoconf automake autotools-dev libglib2.0-dev libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool gnome-terminal pyrit hexedit leafpad
 
 #installation de miLazyCracker
 cd /root/miLazyCracker
@@ -19,11 +21,11 @@ autoreconf -vis
 make && sudo make install
 cd ../
 
-#installation de hexedit
-apt-get install hexedit
-
 #création de la commande dump
 chmod +x /root/BigDumper/prog/Big_Dumper
 cd /usr/bin
 ln -s /root/BigDumper/prog/Big_Dumper dump
 cd ../
+
+clear
+echo "TOUT EST INSTALLE, TAPEZ dump DANS LA CONSOLE POUR LANCER LE PROGRAMME."
