@@ -29,15 +29,18 @@ echo $YS"5) "$VS"Nfc-list"$NS
 echo $YS"6) "$VS"Editer un dump"$NS
 echo $YS"7) "$VS"Différences des dumps"$NS
 echo $YS"8) "$VS"Supprimer un dumps"$NS
-echo $YS"9) "$VS"Vérifier les UID enregistrés"$NS
-#echo $YS"10) "$VS""$NS
+echo $YS"9) "$VS"Voir les UID enregistrés"$NS
+echo $YS"10) "$VS"Voir la liste des Dumps"$NS
 #echo $YS"11) "$VS""$NS
+#echo $YS"12) "$VS""$NS
+#echo $YS"13) "$VS""$NS
 echo ""
 echo $YS"r) "$VS"Recharger l'UID"
+echo $YS"s) "$VS"RAZ un badge clone" 
 echo $YS"00) QUITTER"$NS
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = r ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = r ]||[ $faire = s ] ; do  #Boucle d'erreur
 	fonction_home
 	echo $RS"Erreur de choix, merci de recommencer."$NS
 	read faire
@@ -45,6 +48,7 @@ until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire =
 done
 }
 fonction_mfoc () {
+printf '\033]2;BigDumper - Mfoc\a'
 echo $YS"MFOC		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 echo ""
 
@@ -80,19 +84,20 @@ else
 	fi	
 fi
 }
-fonction_transfere () {
-echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+fonction_transfert () {
+printf '\033]2;BigDumper - Transfert\a'
+echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
 
 echo $RS"Modifier l'UID? (y/n)"$NS
 echo ""
 read choix
-if [ $choix = 01 ] ; then break ; fi
+if [ "$choix" = 01 ] ; then break ; fi
 clear
 
-	if [ $choix = "y" ]
+	if [ "$choix" = "y" ]
 		then
-			echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			echo ""
 			ls /root/BigDumper/dump
 			echo $RS"Nom du dump à copier (sans extension):"$NS
@@ -103,9 +108,9 @@ clear
 				clear
 				nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp 
 			fi		
-	elif [ $choix = "n" ]
+	elif [ "$choix" = "n" ]
 		then
-			echo $YS"TRANSFERE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+			echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 			echo ""
 			ls /root/BigDumper/dump
 			echo $RS"Nom du dump à copier(sans extension):"$NS
@@ -124,17 +129,18 @@ clear
 			fi	
 	fi
 }
-fonction_transfereAuto () {
-echo $YS"TRANSFERE AUTOMATIQUE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+fonction_transfertAuto () {
+printf '\033]2;BigDumper - Transfert Automatique\a'
+echo $YS"TRANSFERT AUTOMATIQUE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
 echo $RS"Placer le tag NFC sur le lecteur puis appuyer sur ENTREE"$NS
 read auto
-if [ $auto = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
+if [ "$auto" = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
 else
 	cd /root/BigDumper/dump/NePasSupprimer
 	fonction_UID
 	FICHIER_UID="${UID}.dmp"
-	if [ -f $FICHIER_UID ] ; then
+	if [ -f $FICHIER_UID ] ; then #Vérifie si le fichier dans la variable existe
 		nfc-mfclassic w B /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID
 	else
 		echo "Aucun fichier ne correspond!"
@@ -142,6 +148,7 @@ else
 fi
 }
 fonction_milazy () {
+printf '\033]2;BigDumper - miLazyCracker\a'
 miLazyCracker
 }
 #fonction_milazy_ancien () {
@@ -188,6 +195,7 @@ fonction_nfc_list () {
 nfc-list
 }
 fonction_hexedit () {
+printf '\033]2;BigDumper - Edition Dump\a'
 echo $YS"EDITER UN DUMP		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 echo ""		
 	ls /root/BigDumper/dump
@@ -203,35 +211,42 @@ echo ""
 	fi
 }
 fonction_diff () {
+printf '\033]2;BigDumper - Comparateur de Dump\a'
+dump1="" ; dump2=""
+until [ -f $dump1.dmp ]&&[ -f $dump2.dmp ]||[ "$dump1" = "01"]||[ "$dump2" = "01" ] ; do
+clear
 echo $YS"DIFF	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
 echo ""
-
 cd /root/BigDumper/dump
 ls
 echo $RS"Choisir le premier fichier à comparer sans extension:"$NS
 echo ""
 read dump1
-if [ $dump1 = 01 ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS
+if [ "$dump1" = "01" ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS
 else
 	echo ""
 	echo $RS"Choisir le deuxième fichier à comparer sans extension:"$NS
 	echo ""
-	read dump2
-	if [ $dump2 = 01 ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS
-	else		
-		dif=$(diff $dump1.dmp $dump2.dmp)
-		if [ -z "$dif" ]  #Si la variable cle est vide alors
-			then
-			echo "Les fichiers sont identiques!"
-		else
-			echo "Les fichiers $VS$dump1.dmp$NS et $VS$dump2.dmp$NS sont différents!"
-		fi
-	fi	
+	read dump2	
+	if [ "$dump2" = "01" ] ; then clear ; break ; echo $RS"Vous avez quitté!"$NS ; fi
 fi
+done
+if [ "$dump1" = "01" ]||[ "$dump2" = "01" ] ; then clear ; break ;echo $RS"Vous avez quitté!"$NS 
+else
+	dif=$(diff $dump1.dmp $dump2.dmp)
+	if [ -z "$dif" ]  #Si la variable dif est vide alors
+	then
+		clear
+		echo "Les fichiers sont identiques!"
+	else
+		clear
+		echo "Les fichiers $VS$dump1.dmp$NS et $VS$dump2.dmp$NS sont différents!"
+	fi	
+fi		
 }
 fonction_supp () {
-supp=""
-rep=""
+printf '\033]2;BigDumper - Suppression de Dump\a'
+supp="" ; rep=""
 until [ $rep = oui ]||[ $rep = non ]||[ $rep = 01 ]||[ $supp = 01 ] ; do
 	clear
 	echo $YS"SUPPRIMER UN DUMP	TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
@@ -261,6 +276,29 @@ elif [ "$rep" = non ] ; then
 elif [ "$rep" = 01 ] ; then break ; echo $RS"Vous avez quitté!"$NS
 elif [ "$supp" = 01 ] ; then break ; echo $RS"Vous avez quitté!"$NS ; fi
 }
+fonction_liste_dump () {
+printf '\033]2;BigDumper - Liste des Dump\a'
+ls /root/BigDumper/dump
+}
+fonction_raz_clone () {
+printf '\033]2;BigDumper - Réinitialiser un badge\a'
+raz=""
+until [ "$raz" = "oui" ] || [ "$raz" = "non" ] || [ "$raz" = "01" ] ; do
+clear
+echo $YS"REMISE A ZERO D'UN BADGE CLONE		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
+echo ""
+echo $RS"ATTENTION, vous êtes sur le point de supprimer les données de votre badge clone!"
+echo "Etes-vous sûr? (oui/non)"$NS
+read raz
+if [ "$raz" = "oui" ]
+then
+	clear
+	nfc-mfclassic W A /root/BigDumper/dump/reload.dmp
+	echo $YS"Les données ont été supprimées."	
+elif [ "$raz" = "01" ] ; then clear ; break
+fi
+done
+}
 fonction_UID () {
 UID=$(nfc-list -t 1|sed -n 's/ //g;/UID/s/.*://p') #Récupère l'UID
 }
@@ -275,21 +313,37 @@ fonction_nomuid () {
 nomuid=$(sed -n "/'$NOM'/s/.*=//p" /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
 }
 fonction_fichier_uid () {
+printf '\033]2;BigDumper - Liste des UID enregistrés\a'
 cat /root/BigDumper/dump/NePasSupprimer/uid.txt
+echo $YS"Tapez \"m\" pour modifier le fichier sinon appuyez sur Entrée"$NS
+read m
+if [ "$m" = "m" ] 
+then 
+	nano /root/BigDumper/dump/NePasSupprimer/uid.txt
+fi
+clear
 }
 
 ##CODE##
 
+until [ "$UID" = "01234567" ] ; do
 clear
 printf '\033]2;BigDumper\a'
-echo "CHARGEMENT DE VOTRE UID EN COURS..."
+echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..."
 fonction_UID
 fonction_uidnom
 fonction_nomuid
 clear
+if [ "$UID" != "01234567" ] &&  [ "$UID" != "" ] ; then
+	echo $RS"ACCES REFUSE!"$NS ; sleep 1
+elif [ "$UID" = "01234567" ] ; then
+	echo $VS"ACCES VALIDE, BIENVENUE"$NS ; sleep 1
+fi
+done
 
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
+printf '\033]2;BigDumper\a'
 fonction_home
 echo ""
 read faire
@@ -306,11 +360,11 @@ elif [ $faire = 2 ]
 	 	
 elif [ $faire = 3 ]
 	then
-		fonction_transfere
+		fonction_transfert
 
 elif [ $faire = 4 ]
 	then
-		fonction_transfereAuto
+		fonction_transfertAuto
 
 elif [ $faire = 5 ]
 	then
@@ -332,13 +386,21 @@ elif [ $faire = 9 ]
 	then
 		fonction_fichier_uid
 		
-#elif [ $faire = 10 ]
-#	then
-#		fonction_
+elif [ $faire = 10 ]
+	then
+		fonction_liste_dump
 
 #elif [ $faire = 11 ]
 #	then
 #		fonction_		
+		
+#elif [ $faire = 12 ]
+#	then
+#		fonction_
+
+#elif [ $faire = 13 ]
+#	then
+#		fonction_
 		
 elif [ $faire = r ]
 	then
@@ -346,8 +408,13 @@ elif [ $faire = r ]
 		fonction_UID
 		fonction_uidnom
 		fonction_nomuid
+		
 		clear		
 		break 1
+		
+elif [ $faire = "s" ]
+	then
+		fonction_raz_clone
 		
 elif [ $faire = 00 ]
 	then

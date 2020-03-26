@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=BigDumper
+Comment=
+Exec=dump
+Icon=/root/BigDumper/prog/iconbigdumper.PNG
+Path=
+Terminal=true
+StartupNotify=false
