@@ -21,7 +21,7 @@ autoreconf -vis
 make && sudo make install
 cd ../
 
-#création de la commande dump
+#création de la commande dump et du raccourci
 chmod +x /root/BigDumper/prog/Big_Dumper
 cd /usr/bin
 ln -s /root/BigDumper/prog/Big_Dumper dump
