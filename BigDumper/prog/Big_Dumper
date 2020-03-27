@@ -37,10 +37,11 @@ echo $YS"10) "$VS"Voir la liste des Dumps"$NS
 echo ""
 echo $YS"r) "$VS"Recharger l'UID"
 echo $YS"s) "$VS"RAZ un badge clone" 
+echo $YS"maj) "$VS"Mettre à jour le programme"
 echo $YS"00) QUITTER"$NS
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = r ]||[ $faire = s ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = r ]||[ $faire = s ]||[ $faire = maj ] ; do  #Boucle d'erreur
 	fonction_home
 	echo $RS"Erreur de choix, merci de recommencer."$NS
 	read faire
@@ -323,23 +324,35 @@ then
 fi
 clear
 }
+fonction_MiseAJour () {
+echo $VS"MISE A JOUR EN COURS MERCI DE PATIENTER..."$NS
+git clone https://github.com/maxbrd/BigDumper /root/majbigdumper
+cp /root/majbigdumper/BigDumper/prog/Big_Dumper /root/BigDumper/prog
+rm -r /root/majbigdumper
+chmod +x /root/BigDumper/prog/Big_Dumper
+clear
+echo $YS"MISE A JOUR TERMINEE!"$NS
+sleep 1
+dump
+exit
+}
 
 ##CODE##
 
-until [ "$UID" = "01234567" ] ; do
+#until [ "$UID" = "01234567" ] ; do
 clear
 printf '\033]2;BigDumper\a'
-echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..."
+echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..." 
 fonction_UID
 fonction_uidnom
 fonction_nomuid
 clear
-if [ "$UID" != "01234567" ] &&  [ "$UID" != "" ] ; then
-	echo $RS"ACCES REFUSE!"$NS ; sleep 1
-elif [ "$UID" = "01234567" ] ; then
-	echo $VS"ACCES VALIDE, BIENVENUE"$NS ; sleep 1
-fi
-done
+#if [ "$UID" != "01234567" ] &&  [ "$UID" != "" ] ; then
+#	echo $RS"ACCES REFUSE!"$NS ; sleep 1
+#elif [ "$UID" = "01234567" ] ; then
+#	echo $VS"ACCES VALIDE, BIENVENUE"$NS ; sleep 1
+#fi
+#done
 
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
@@ -415,6 +428,10 @@ elif [ $faire = r ]
 elif [ $faire = "s" ]
 	then
 		fonction_raz_clone
+		
+elif [ $faire = "maj" ]
+	then		
+		fonction_MiseAJour
 		
 elif [ $faire = 00 ]
 	then
