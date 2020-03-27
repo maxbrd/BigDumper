@@ -333,7 +333,7 @@ rm -r /root/majbigdumper
 chmod +x /root/BigDumper/prog/Big_Dumper
 clear
 echo $YS"MISE A JOUR TERMINEE!"$NS
-sleep 1
+sleep 2
 dump
 exit
 }
