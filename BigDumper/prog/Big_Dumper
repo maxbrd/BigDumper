@@ -325,6 +325,7 @@ fi
 clear
 }
 fonction_MiseAJour () {
+printf '\033]2;BigDumper - MISE A JOUR\a'
 echo $VS"MISE A JOUR EN COURS MERCI DE PATIENTER..."$NS
 git clone https://github.com/maxbrd/BigDumper /root/majbigdumper
 cp /root/majbigdumper/BigDumper/prog/Big_Dumper /root/BigDumper/prog
