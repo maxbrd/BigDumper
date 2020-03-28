@@ -334,7 +334,7 @@ cp /root/majbigdumper/BigDumper/prog/Big_Dumper /root/BigDumper/prog
 rm -r /root/majbigdumper
 chmod +x /root/BigDumper/prog/Big_Dumper
 clear
-echo $YS"MISE A JOUR TERMINEE!"$NS
+echo $YS"MISE A JOUR TERMINEE! RELANCEMENT DU PROGRAMME..."$NS
 sleep 2
 dump
 exit
