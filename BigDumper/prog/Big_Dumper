@@ -363,7 +363,7 @@ if [ "$etat" = "activé" ] ; then
 			clear
 			sed -i '7 s/etat="activé"/etat="désactivé"/' /root/BigDumper/prog/Big_Dumper
 			sed -i "8 s/uidverrouillage=\"$UID\"/uidverrouillage=\"\"/" /root/BigDumper/prog/Big_Dumper
-			echo $YS"Verrouillage désactivé! Relancement du programme..."
+			echo $YS"Verrouillage désactivé! Relancement du programme..."$NS
 			sleep 2
 			dump
 			exit
@@ -382,7 +382,7 @@ elif [ "$etat" = "désactivé" ] ; then
 		clear
 		sed -i '7 s/etat="désactivé"/etat="activé"/' /root/BigDumper/prog/Big_Dumper
 		sed -i "8 s/uidverrouillage=\"\"/uidverrouillage=\"$UID\"/" /root/BigDumper/prog/Big_Dumper
-		echo $YS"Verrouillage activé! Relancement du programme..."
+		echo $YS"Verrouillage activé! Relancement du programme..."$NS
 		sleep 2
 		dump
 		exit
@@ -419,7 +419,7 @@ if [ "$etat" = "activé" ] ; then
 	until [ "$UID" = "$uidverrouillage" ] ; do
 	clear
 	printf '\033]2;BigDumper\a'
-	echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..." 
+	echo $YS"PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..."$NS 
 	fonction_UID
 	fonction_uidnom
 	fonction_nomuid
@@ -433,7 +433,7 @@ if [ "$etat" = "activé" ] ; then
 elif [ "$etat" = "désactivé" ] ; then	
 	clear
 	printf '\033]2;BigDumper\a'
-	echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..." 
+	echo $YS"PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..."$NS
 	fonction_UID
 	fonction_uidnom
 	fonction_nomuid
