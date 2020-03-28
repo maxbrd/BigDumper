@@ -392,7 +392,7 @@ fi
 fonction_parametres () {
 printf '\033]2;BigDumper - Paramètres\a'
 faire2=""
-until [ "$faire2" = "1" ]||[ "$faire2" = "2" ] ; do
+until [ "$faire2" = "1" ]||[ "$faire2" = "2" ]||[ "$faire2" = "b" ] ; do
 echo $RS"Que souhaitez-vous faire?"$NS
 echo ""
 echo $YS"1) "$VS"Mettre à jour le programme"$NS
@@ -408,7 +408,7 @@ elif [ "$faire2" = 2 ] ; then
 	fonction_verrouillage
 elif [ "$faire2" = "b" ] ; then 
 	clear
-	break	
+	break 	
 fi
 }
 
