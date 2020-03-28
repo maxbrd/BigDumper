@@ -700,7 +700,7 @@ int main(int argc, char *const argv[])
             mf_anticollision(t, r);
           } else { // and Read
             if ((res = nfc_initiator_mifare_cmd(r.pdi, MC_READ, block, &mp)) >= 0) {
-              fprintf(stdout, "Bloc %02d, type %c, key %012llx :", block, 'B', bytes_to_num(t.sectors[i].KeyB, 6));
+              fprintf(stdout, "Bloc %02d, type %c, clé %012llx :", block, 'B', bytes_to_num(t.sectors[i].KeyB, 6));
               print_hex(mp.mpd.abtData, 16);
               mf_configure(r.pdi);
               mf_select_tag(r.pdi, &(t.nt));

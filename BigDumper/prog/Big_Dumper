@@ -5,7 +5,7 @@
 #bon=n
 a=1
 etat="désactivé" #GARDER CETTE VAIRABLE EN LIGNE 7 !!
-uidverrouillage="" #GARDER CETTE VAIRABLE EN LIGNE 7 !!
+uidverrouillage="" #GARDER CETTE VAIRABLE EN LIGNE 8 !!
 
 ##COULEURS##
 RS="\033[1;31m" #rouge gras
@@ -43,7 +43,7 @@ echo $YS"p) "$VS"Paramètres"
 echo $YS"00) QUITTER"$NS
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = r ]||[ $faire = s ]||[ $faire = p ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = 11 ]||[ $faire = r ]||[ $faire = s ]||[ $faire = p ] ; do  #Boucle d'erreur
 	fonction_home
 	echo $RS"Erreur de choix, merci de recommencer."$NS
 	read faire
@@ -72,10 +72,12 @@ else
 		clear
 		if [ -z "$cle" ]  #Si la variable cle est vide alors
 		then	
+			fonction_badgepresent
 			mfoc -P 500 -O /root/BigDumper/dump/$fichier.dmp
 			fonction_UID
 			cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
 		else
+			fonction_badgepresent
 			mfoc -P 500 -f /root/BigDumper/clé/$cle.txt -O /root/BigDumper/dump/$fichier.dmp
 			fonction_UID
 			cp /root/BigDumper/dump/$fichier.dmp /root/BigDumper/dump/NePasSupprimer/$UID.dmp
@@ -140,6 +142,7 @@ echo $RS"Placer le tag NFC sur le lecteur puis appuyer sur ENTREE"$NS
 read auto
 if [ "$auto" = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
 else
+	fonction_badgepresent
 	cd /root/BigDumper/dump/NePasSupprimer
 	fonction_UID
 	FICHIER_UID="${UID}.dmp"
@@ -313,7 +316,7 @@ then
 fi
 }
 fonction_nomuid () {
-nomuid=$(sed -n "/'$NOM'/s/.*=//p" /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
+nomuid=$(sed -n "/$NOM/s/.*=//p" /root/BigDumper/dump/NePasSupprimer/uid.txt) #extrait l'UID grace au nom
 }
 fonction_fichier_uid () {
 printf '\033]2;BigDumper - Liste des UID enregistrés\a'
@@ -325,6 +328,14 @@ then
 	nano /root/BigDumper/dump/NePasSupprimer/uid.txt
 fi
 clear
+}
+fonction_badgepresent () {
+UID=""
+until [ "$UID" != "" ] ; do
+echo $YS"MERCI DE PLACER VOTRE BADGE SUR LE LECTEUR"$NS
+fonction_UID
+clear
+done
 }
 fonction_MiseAJour () {
 printf '\033]2;BigDumper - MISE A JOUR\a'
@@ -347,7 +358,7 @@ printf '\033]2;BigDumper - Configuration du Verrouillage\a'
 
 if [ "$etat" = "activé" ] ; then
 	echo $NS"Verouillage "$VS"$etat"$NS
-	echo $NS"Tapez \"désactiver\" pour retirer le verrouillage sinon appuyez sur Entr\ée"
+	echo $NS"Tapez \"désactiver\" pour retirer le verrouillage sinon appuyez sur Entrée"
 	read reponse
 	if [ "$reponse" = "désactiver" ] ; then 
 		clear
@@ -357,9 +368,8 @@ if [ "$etat" = "activé" ] ; then
 		fonction_UID
 		if [ "$UID" != "$uidverrouillage" ] &&  [ "$UID" != "" ] ; then
 			echo $RS"MAUVAIS BADGE!"$NS ; sleep 1
-		fi	
-		done
-		if [ "$UID" = "$uidverrouillage" ] ; then
+		
+		elif [ "$UID" = "$uidverrouillage" ] ; then
 			clear
 			sed -i '7 s/etat="activé"/etat="désactivé"/' /root/BigDumper/prog/Big_Dumper
 			sed -i "8 s/uidverrouillage=\"$UID\"/uidverrouillage=\"\"/" /root/BigDumper/prog/Big_Dumper
@@ -368,6 +378,7 @@ if [ "$etat" = "activé" ] ; then
 			dump
 			exit
 		fi
+		done
 	fi	
 elif [ "$etat" = "désactivé" ] ; then
 	echo $NS"Verouillage "$RS"$etat"$NS
@@ -411,7 +422,88 @@ elif [ "$faire2" = "b" ] ; then
 	break 	
 fi
 }
-
+fonction_argent () {
+printf '\033]2;BigDumper - Modification argent\a'
+faire2=""
+argent=""
+until [ "$faire2" = "1" ]||[ "$faire2" = "2" ]||[ "$faire2" = "3" ]||[ "$faire2" = "b" ] ; do
+echo $RS"Selectionnez la marque du distributeur?"$NS
+echo ""
+echo $YS"1) "$VS"Selecta"$NS
+echo $YS"2) "$VS"Daltys"$NS
+echo $YS"3) "$VS"D8"$NS
+#echo $YS"4) "$VS"  "$NS
+#echo $YS"5) "$VS"  "$NS
+echo ""
+echo $YS"b) "$VS"retour"$NS
+read faire2
+clear
+done
+if [ "$faire2" = "1" ] ; then
+	fonction_badgepresent
+	mfoc -P 500 -f /root/BigDumper/clé/Selecta.txt -O /root/BigDumper/dump/tmp.dmp
+	argent=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/.........................//;7s/............................$//;7p')
+	argent1=$(printf "%d\n" 0x$argent)
+	if [ ${#argent1} = 4 ]; then #si la variable contient 4 caractères
+		argent2=$(printf "%d\n" 0x$argent | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 3 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 2 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 1 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 0 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	fi	
+	clear
+	echo "Vous avez "$VS$argent2$NS"sur votre badge."
+	rm /root/BigDumper/dump/tmp.dmp	
+elif [ "$faire2" = "2" ] ; then
+	fonction_badgepresent
+	mfoc -P 500 -f /root/BigDumper/clé/Daltys.txt -O /root/BigDumper/dump/tmp.dmp 
+	clear
+	argent=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '51s/ //g;51s/...........................//;51s/..........................$//;51p')
+	argent1=$(printf "%d\n" 0x$argent)
+	if [ ${#argent1} = 4 ]; then #si la variable contient 4 caractères
+		argent2=$(printf "%d\n" 0x$argent | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 3 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 2 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 1 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 0 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	fi	
+	clear
+	echo "Vous avez "$VS$argent2$NS"sur votre badge."
+	rm /root/BigDumper/dump/tmp.dmp
+elif [ "$faire2" = "3" ] ; then
+	fonction_badgepresent
+	mfoc -P 500 -f /root/BigDumper/clé/D8.txt -O /root/BigDumper/dump/tmp.dmp
+	clear
+	argent=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/...........................//;7s/..........................$//;7p')
+	argent1=$(printf "%d\n" 0x$argent)
+	if [ ${#argent1} = 4 ]; then #si la variable contient 4 caractères
+		argent2=$(printf "%d\n" 0x$argent | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 3 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 2 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 1 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	elif [ ${#argent1} = 0 ]; then
+		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+	fi	
+	clear
+	echo "Vous avez "$VS$argent2$NS"sur votre badge."
+	rm /root/BigDumper/dump/tmp.dmp
+	
+elif [ "$faire2" = "b" ] ; then 
+	clear
+	break 	
+fi
+}
 
 ##CODE##
 
@@ -421,13 +513,11 @@ if [ "$etat" = "activé" ] ; then
 	printf '\033]2;BigDumper\a'
 	echo $YS"PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..."$NS 
 	fonction_UID
-	fonction_uidnom
-	fonction_nomuid
 	clear
 	if [ "$UID" != "$uidverrouillage" ] &&  [ "$UID" != "" ] ; then
 		echo $RS"ACCES REFUSE!"$NS ; sleep 1
 	elif [ "$UID" = "$uidverrouillage" ] ; then
-		echo $VS"ACCES VALIDE, BIENVENUE"$NS ; sleep 1
+		echo $VS"ACCES AUTORISEE, BIENVENUE"$NS ; sleep 1.5
 	fi
 	done
 elif [ "$etat" = "désactivé" ] ; then	
@@ -435,11 +525,10 @@ elif [ "$etat" = "désactivé" ] ; then
 	printf '\033]2;BigDumper\a'
 	echo $YS"PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..."$NS
 	fonction_UID
-	fonction_uidnom
-	fonction_nomuid
 	clear
 fi	
-	
+fonction_uidnom
+fonction_nomuid	
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
 printf '\033]2;BigDumper\a'
@@ -489,9 +578,9 @@ elif [ $faire = 10 ]
 	then
 		fonction_liste_dump
 
-#elif [ $faire = 11 ]
-#	then
-#		fonction_		
+elif [ $faire = 11 ]
+	then
+		fonction_argent		
 		
 #elif [ $faire = 12 ]
 #	then
