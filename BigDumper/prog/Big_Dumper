@@ -4,6 +4,8 @@
 ##VARIABLES##
 #bon=n
 a=1
+etat="désactivé" #GARDER CETTE VAIRABLE EN LIGNE 7 !!
+uidverrouillage="" #GARDER CETTE VAIRABLE EN LIGNE 7 !!
 
 ##COULEURS##
 RS="\033[1;31m" #rouge gras
@@ -37,11 +39,11 @@ echo $YS"10) "$VS"Voir la liste des Dumps"$NS
 echo ""
 echo $YS"r) "$VS"Recharger l'UID"
 echo $YS"s) "$VS"RAZ un badge clone" 
-echo $YS"maj) "$VS"Mettre à jour le programme"
+echo $YS"p) "$VS"Paramètres"
 echo $YS"00) QUITTER"$NS
 }
 fonction_erreur () {
-until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = r ]||[ $faire = s ]||[ $faire = maj ] ; do  #Boucle d'erreur
+until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = r ]||[ $faire = s ]||[ $faire = p ] ; do  #Boucle d'erreur
 	fonction_home
 	echo $RS"Erreur de choix, merci de recommencer."$NS
 	read faire
@@ -337,24 +339,107 @@ sleep 2
 dump
 exit
 }
+fonction_verrouillage () {
+reponse=""
+UID=""
+clear
+printf '\033]2;BigDumper - Configuration du Verrouillage\a'
+
+if [ "$etat" = "activé" ] ; then
+	echo $NS"Verouillage "$VS"$etat"$NS
+	echo $NS"Tapez \"désactiver\" pour retirer le verrouillage sinon appuyez sur Entr\ée"
+	read reponse
+	if [ "$reponse" = "désactiver" ] ; then 
+		clear
+		until [ "$UID" = "$uidverrouillage" ] ; do
+		clear
+		echo "Merci de placer votre badge sur le lecteur"
+		fonction_UID
+		if [ "$UID" != "$uidverrouillage" ] &&  [ "$UID" != "" ] ; then
+			echo $RS"MAUVAIS BADGE!"$NS ; sleep 1
+		fi	
+		done
+		if [ "$UID" = "$uidverrouillage" ] ; then
+			clear
+			sed -i '7 s/etat="activé"/etat="désactivé"/' /root/BigDumper/prog/Big_Dumper
+			sed -i "8 s/uidverrouillage=\"$UID\"/uidverrouillage=\"\"/" /root/BigDumper/prog/Big_Dumper
+			echo "Verrouillage désactivé! Relancement du programme..."
+			sleep 2
+			dump
+			exit
+		fi
+	fi	
+elif [ "$etat" = "désactivé" ] ; then
+	echo $NS"Verouillage "$RS"$etat"$NS
+	echo $NS"Tapez \"activer\" pour activer le verrouillage sinon appuyez sur Entrée"
+	read reponse
+	if [ "$reponse" = "activer" ] ; then
+		until [ "$UID" != "" ] ; do
+		clear
+		echo "Merci de placer votre badge sur le lecteur"
+		fonction_UID
+		done
+		clear
+		sed -i '7 s/etat="désactivé"/etat="activé"/' /root/BigDumper/prog/Big_Dumper
+		sed -i "8 s/uidverrouillage=\"\"/uidverrouillage=\"$UID\"/" /root/BigDumper/prog/Big_Dumper
+		echo "Verrouillage activé! Relancement du programme..."
+		sleep 2
+		dump
+		exit
+	fi
+fi
+}
+fonction_parametres () {
+printf '\033]2;BigDumper - Paramètres\a'
+faire2=""
+until [ "$faire2" = "1" ]||[ "$faire2" = "2" ] ; do
+echo $RS"Que souhaitez-vous faire?"$NS
+echo ""
+echo $YS"1) "$VS"Mettre à jour le programme"$NS
+echo $YS"2) "$VS"Configuration verrouillage du programme par badge"$NS
+echo ""
+echo $YS"b) "$VS"retour"$NS
+read faire2
+clear
+done
+if [ "$faire2" = 1 ] ; then
+	fonction_MiseAJour
+elif [ "$faire2" = 2 ] ; then
+	fonction_verrouillage
+elif [ "$faire2" = "b" ] ; then 
+	clear
+	break	
+fi
+}
+
 
 ##CODE##
 
-#until [ "$UID" = "01234567" ] ; do
-clear
-printf '\033]2;BigDumper\a'
-echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..." 
-fonction_UID
-fonction_uidnom
-fonction_nomuid
-clear
-#if [ "$UID" != "01234567" ] &&  [ "$UID" != "" ] ; then
-#	echo $RS"ACCES REFUSE!"$NS ; sleep 1
-#elif [ "$UID" = "01234567" ] ; then
-#	echo $VS"ACCES VALIDE, BIENVENUE"$NS ; sleep 1
-#fi
-#done
-
+if [ "$etat" = "activé" ] ; then
+	until [ "$UID" = "$uidverrouillage" ] ; do
+	clear
+	printf '\033]2;BigDumper\a'
+	echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..." 
+	fonction_UID
+	fonction_uidnom
+	fonction_nomuid
+	clear
+	if [ "$UID" != "$uidverrouillage" ] &&  [ "$UID" != "" ] ; then
+		echo $RS"ACCES REFUSE!"$NS ; sleep 1
+	elif [ "$UID" = "$uidverrouillage" ] ; then
+		echo $VS"ACCES VALIDE, BIENVENUE"$NS ; sleep 1
+	fi
+	done
+elif [ "$etat" = "désactivé" ] ; then	
+	clear
+	printf '\033]2;BigDumper\a'
+	echo "PLACEZ VOTRE BADGE CHARGEMENT DE VOTRE UID EN COURS..." 
+	fonction_UID
+	fonction_uidnom
+	fonction_nomuid
+	clear
+fi	
+	
 until [ $a != 1 ]&&[ $faire = 00 ] ; do
 until [ $a != 1 ]&&[ $faire = 01 ] ; do
 printf '\033]2;BigDumper\a'
@@ -430,9 +515,9 @@ elif [ $faire = "s" ]
 	then
 		fonction_raz_clone
 		
-elif [ $faire = "maj" ]
+elif [ $faire = "p" ]
 	then		
-		fonction_MiseAJour
+		fonction_parametres
 		
 elif [ $faire = 00 ]
 	then
