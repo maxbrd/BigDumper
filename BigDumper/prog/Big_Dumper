@@ -363,7 +363,7 @@ if [ "$etat" = "activé" ] ; then
 			clear
 			sed -i '7 s/etat="activé"/etat="désactivé"/' /root/BigDumper/prog/Big_Dumper
 			sed -i "8 s/uidverrouillage=\"$UID\"/uidverrouillage=\"\"/" /root/BigDumper/prog/Big_Dumper
-			echo "Verrouillage désactivé! Relancement du programme..."
+			echo $YS"Verrouillage désactivé! Relancement du programme..."
 			sleep 2
 			dump
 			exit
@@ -382,7 +382,7 @@ elif [ "$etat" = "désactivé" ] ; then
 		clear
 		sed -i '7 s/etat="désactivé"/etat="activé"/' /root/BigDumper/prog/Big_Dumper
 		sed -i "8 s/uidverrouillage=\"\"/uidverrouillage=\"$UID\"/" /root/BigDumper/prog/Big_Dumper
-		echo "Verrouillage activé! Relancement du programme..."
+		echo $YS"Verrouillage activé! Relancement du programme..."
 		sleep 2
 		dump
 		exit
