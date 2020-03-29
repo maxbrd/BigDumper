@@ -4,8 +4,8 @@
 ##VARIABLES##
 #bon=n
 a=1
-etat="désactivé" #GARDER CETTE VAIRABLE EN LIGNE 7 !!
-uidverrouillage="" #GARDER CETTE VAIRABLE EN LIGNE 8 !!
+etat="désactivé" #GARDER CETTE VARAIBLE EN LIGNE 7 !!
+uidverrouillage="" #GARDER CETTE VARIABLE EN LIGNE 8 !!
 
 ##COULEURS##
 RS="\033[1;31m" #rouge gras
@@ -21,7 +21,7 @@ clear
 echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP      VOTRE UID EST: $RS$UID "$NS
 echo $VS"                                       IL CORRESPOND AU DUMP: $RS$uidnom "$NS
 echo ""
-echo $RS"Que souhaitez-vous faire?"$NS
+echo $RS"Que voulez-vous faire?"$NS
 echo ""
 echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
 echo $YS"2) "$VS"Dumper un carte avec miLazyCracker (peut être long!)"$NS
@@ -33,7 +33,7 @@ echo $YS"7) "$VS"Différences des dumps"$NS
 echo $YS"8) "$VS"Supprimer un dumps"$NS
 echo $YS"9) "$VS"Voir les UID enregistrés"$NS
 echo $YS"10) "$VS"Voir la liste des Dumps"$NS
-#echo $YS"11) "$VS""$NS
+echo $YS"11) "$VS"Outils badges distributeurs"$NS
 #echo $YS"12) "$VS""$NS
 #echo $YS"13) "$VS""$NS
 echo ""
@@ -422,12 +422,11 @@ elif [ "$faire2" = "b" ] ; then
 	break 	
 fi
 }
-fonction_argent () {
+fonction_badgedistributeur () {
 printf '\033]2;BigDumper - Modification argent\a'
-faire2=""
-argent=""
-until [ "$faire2" = "1" ]||[ "$faire2" = "2" ]||[ "$faire2" = "3" ]||[ "$faire2" = "b" ] ; do
-echo $RS"Selectionnez la marque du distributeur?"$NS
+choix=""
+until [ "$choix" = "1" ]||[ "$choix" = "2" ]||[ "$choix" = "3" ]||[ "$choix" = "b" ] ; do
+echo $RS"Selectionnez la marque du distributeur"
 echo ""
 echo $YS"1) "$VS"Selecta"$NS
 echo $YS"2) "$VS"Daltys"$NS
@@ -436,75 +435,155 @@ echo $YS"3) "$VS"D8"$NS
 #echo $YS"5) "$VS"  "$NS
 echo ""
 echo $YS"b) "$VS"retour"$NS
-read faire2
+read choix
 clear
 done
-if [ "$faire2" = "1" ] ; then
+if [ "$choix" = "1" ] ; then #Selecta
+	choix=""
 	fonction_badgepresent
-	mfoc -P 500 -f /root/BigDumper/clé/Selecta.txt -O /root/BigDumper/dump/tmp.dmp
-	argent=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/.........................//;7s/............................$//;7p')
-	argent1=$(printf "%d\n" 0x$argent)
-	if [ ${#argent1} = 4 ]; then #si la variable contient 4 caractères
-		argent2=$(printf "%d\n" 0x$argent | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 3 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 2 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 1 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 0 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	fi	
+	echo "Extraction des données en cours, merci de patienter..."
+	mfoc -P 500 -f /root/BigDumper/clé/Selecta.txt -O /root/BigDumper/dump/tmp.dmp >/dev/null
+	numbadgehex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '5s/ //g;5s/...................................//;5s/................$//;5p')
+	numbadgehexdec=$(printf "%d\n" 0x$numbadgehex)
+	argenthex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/.........................//;7s/............................$//;7p')
+	fonction_argentHexDec
+	until [ "$choix" = "b" ] ; do
+	echo $VS"INFORMATION BADGE SELECTA      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
+	echo $VS"                               VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
+	echo ""
+	echo $RS"Que voulez-vous faire?"$NS
+	echo ""
+	#echo $YS"1) "$VS"Modifier votre n° de badge"$NS
+	#echo $YS"2) "$VS"Modifier votre solde"$NS
+	#echo $YS"3) "$VS"  "$NS
+	#echo $YS"4) "$VS"  "$NS
+	#echo $YS"5) "$VS"  "$NS
+	echo ""
+	echo $YS"b) "$VS"retour"$NS
+	read choix
 	clear
-	echo "Vous avez "$VS$argent2$NS"sur votre badge."
-	rm /root/BigDumper/dump/tmp.dmp	
-elif [ "$faire2" = "2" ] ; then
-	fonction_badgepresent
-	mfoc -P 500 -f /root/BigDumper/clé/Daltys.txt -O /root/BigDumper/dump/tmp.dmp 
-	clear
-	argent=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '51s/ //g;51s/...........................//;51s/..........................$//;51p')
-	argent1=$(printf "%d\n" 0x$argent)
-	if [ ${#argent1} = 4 ]; then #si la variable contient 4 caractères
-		argent2=$(printf "%d\n" 0x$argent | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 3 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 2 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 1 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 0 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	fi	
-	clear
-	echo "Vous avez "$VS$argent2$NS"sur votre badge."
-	rm /root/BigDumper/dump/tmp.dmp
-elif [ "$faire2" = "3" ] ; then
-	fonction_badgepresent
-	mfoc -P 500 -f /root/BigDumper/clé/D8.txt -O /root/BigDumper/dump/tmp.dmp
-	clear
-	argent=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/...........................//;7s/..........................$//;7p')
-	argent1=$(printf "%d\n" 0x$argent)
-	if [ ${#argent1} = 4 ]; then #si la variable contient 4 caractères
-		argent2=$(printf "%d\n" 0x$argent | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 3 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 2 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 1 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	elif [ ${#argent1} = 0 ]; then
-		argent2=$(printf "%d\n" 0x$argent | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
-	fi	
-	clear
-	echo "Vous avez "$VS$argent2$NS"sur votre badge."
-	rm /root/BigDumper/dump/tmp.dmp
+	done
+	#if [ "$choix" = "1" ] ; then
 	
-elif [ "$faire2" = "b" ] ; then 
+	#elif [ "$choix" = "2" ] ; then
+	
+	if [ "$choix" = "b" ] ; then 
 	clear
-	break 	
+	break 
+	fi
+elif [ "$choix" = "2" ] ; then #Daltys
+	choix=""
+	fonction_badgepresent
+	echo "Merci de patienter pendant le chargement..."
+	mfoc -P 500 -f /root/BigDumper/clé/Daltys.txt -O /root/BigDumper/dump/tmp.dmp >/dev/null
+	numbadgehex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '49s/ //g;49s/.....................................//;49s/................$//;49p')
+	numbadgehexdec=$(printf "%d\n" 0x$numbadgehex)
+	argenthex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '51s/ //g;51s/...........................//;51s/..........................$//;51p')
+	fonction_argentHexDec
+	until [ "$choix" = "b" ] ; do
+	echo $VS"INFORMATION BADGE DALTYS      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
+	echo $VS"                              VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
+	echo ""
+	echo $RS"Que voulez-vous faire?"$NS
+	echo ""
+	#echo $YS"1) "$VS"Modifier votre n° de badge"$NS
+	#echo $YS"2) "$VS"Modifier votre solde"$NS
+	#echo $YS"3) "$VS"  "$NS
+	#echo $YS"4) "$VS"  "$NS
+	#echo $YS"5) "$VS"  "$NS
+	echo ""
+	echo $YS"b) "$VS"retour"$NS
+	read choix
+	clear
+	done
+	#if [ "$choix" = "1" ] ; then
+	
+	#elif [ "$choix" = "2" ] ; then
+		
+	if [ "$choix" = "b" ] ; then 
+	clear
+	break 
+	fi
+elif [ "$choix" = "3" ] ; then #D8
+	choix=""
+	fonction_badgepresent
+	echo "Merci de patienter pendant le chargement..."
+	mfoc -P 500 -f /root/BigDumper/clé/D8.txt -O /root/BigDumper/dump/tmp.dmp >/dev/null
+	cafesgratuitshex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '9s/ //g;9s/............//;9s/............................................$//;9p')
+	cafesgratuitsdec=$(printf "%d\n" 0x$cafesgratuitshex)
+	numbadgehex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '5s/ //g;5s/.....................................//;5s/................$//;5p')
+	numbadgehexdec=$(printf "%d\n" 0x$numbadgehex)
+	argenthex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/...........................//;7s/..........................$//;7p')
+	fonction_argentHexDec
+	until [ "$choix" = "b" ] ; do
+	echo $VS"INFORMATION BADGE D8      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
+	echo $VS"                          VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
+	echo $VS"                          IL VOUS RESTE $RS$cafesgratuitsdec "$VS"CAFES GRATUITS"$NS
+	echo ""
+	echo $RS"Que voulez-vous faire?"$NS
+	echo ""
+	#echo $YS"1) "$VS"Modifier votre n° de badge"$NS
+	#echo $YS"2) "$VS"Modifier votre solde"$NS
+	#echo $YS"3) "$VS"Modifier le nombre de cafés gratuits"$NS
+	#echo $YS"4) "$VS"  "$NS
+	#echo $YS"5) "$VS"  "$NS
+	echo ""
+	echo $YS"b) "$VS"retour"$NS
+	read choix
+	clear
+	done
+	#if [ "$choix" = "1" ] ; then
+	
+	#elif [ "$choix" = "2" ] ; then
+	
+	#elif [ "$choix" = "3" ] ; then
+	#	combien=""
+	#	until [ "$combien" <= "255" ] ; do
+	#	echo $VS"INFORMATION BADGE D8  IL VOUS RESTE $RS$cafesgratuitsdec "$VS"CAFES GRATUITS"$NS
+	#	echo ""
+	#	echo $RS"Combien en voulez-vous? (255 maximum mais ça en fait beaucoup quand même)"$NS
+	#	read combien
+	#	done
+		
+	
+	if [ "$choix" = "b" ] ; then 
+	clear
+	break 
+	fi
+	
+elif [ "$choix" = "b" ] ; then 
+	clear
+	break 
+rm /root/BigDumper/dump/tmp.dmp	
 fi
 }
+fonction_argentHexDec () {
+argentdec=$(printf "%d\n" 0x$argenthex)
+if [ ${#argentdec} = 4 ]; then #si la variable contient 4 caractères
+	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+elif [ ${#argentdec} = 3 ]; then
+	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/^/0/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+elif [ ${#argentdec} = 2 ]; then
+	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/^/00/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+elif [ ${#argentdec} = 1 ]; then
+	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/^/000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+elif [ ${#argentdec} = 0 ]; then
+	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
+fi	
+clear
+#echo "Vous avez "$VS$argentEnEuro$NS"sur votre badge."
+}
+fonction_ajoutcafegratuit () {
+nbrcafehex=$(printf "%x\n" $combien)
+if [ ${#nbrcafehex} = 2 ]; then
+	nbrcafeajoutehex=$(printf "%d\n" $combien)
+elif [ ${#nbrcafehex} = 1 ]; then
+	nbrcafeajoutehex=$(printf "%d\n" $combien | sed 's/^/0/')
+elif [ ${#nbrcafehex} = 0 ]; then
+	nbrcafeajoutehex=$(printf "%d\n" $combien | sed 's/^/0/')
+fi
 
+}
 ##CODE##
 
 if [ "$etat" = "activé" ] ; then
@@ -580,7 +659,7 @@ elif [ $faire = 10 ]
 
 elif [ $faire = 11 ]
 	then
-		fonction_argent		
+		fonction_badgedistributeur		
 		
 #elif [ $faire = 12 ]
 #	then

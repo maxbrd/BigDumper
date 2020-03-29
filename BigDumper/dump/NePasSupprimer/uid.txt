@@ -1,7 +1,8 @@
+selecta=1e2ba536
+reload=01234567
 badgemaman=e565c15b
 badgepapa=40db1748
 badgemanon=cd89d92d
-test=01234567
 selfangers=9857da2a
 entreeangers=3d9e9f29
 etoilemartin2=32d24c5d

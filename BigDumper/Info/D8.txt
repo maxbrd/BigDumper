@@ -1,0 +1,3 @@
+N° clé: ligne 040 -> bloc 4 -> 4 derniers numéros
+Argent: ligne 060 -> bloc 3: 00[01f4]01
+Café gratuit: ligne 080 -> bloc 1: 00[02]0000 ici 2 café gratuit

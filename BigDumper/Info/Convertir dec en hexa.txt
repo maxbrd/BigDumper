@@ -1,0 +1,5 @@
+Convertir Hexa en Dec:
+	printf "%d\n" 0x4d3
+
+Convertir Dec en Hexa:
+	printf "%02x\n" 1235

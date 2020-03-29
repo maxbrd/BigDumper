@@ -12,6 +12,8 @@ TRANSFERER le dump:
 	nfc-mfclassic w A newdonnée.dmp anciennce-donnée.dmp
 	nfc-mfclassic W A carte-à-copier.dmp (pour changer aussi l'UID) 
 
+MODIFIER UID: 
+	nfc-mfsetuid
 
 EN CAS DE PROBLEMES:
 
@@ -19,7 +21,7 @@ Mise à jour paquet: sudo apt-get update
 Installer le driver: sudo apt install libacsccid1 libccid pcscd  libnfc* rfdump libifd-cyberjack6
 Installer libusb etc: sudo apt-get install libusb-dev libccid pcscd libpcsclite1 libpcsclite-dev
 Installer editeur hexa: sudo apt-get install hexedit 
-apt-get install git binutils make csh g++ sed gawk autoconf automake autotools-dev libglib2.0-dev libnfc-dev liblzma-dev libnfc-bin libusb-dev
+
 
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 Si vous avez cette erreur:
