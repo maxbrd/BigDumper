@@ -351,8 +351,7 @@ dump
 exit
 }
 fonction_verrouillage () {
-reponse=""
-UID=""
+reponse="" ; UID=""
 clear
 printf '\033]2;BigDumper - Configuration du Verrouillage\a'
 
@@ -665,8 +664,7 @@ elif [ "$choix" = "b" ] ; then
 	echo $RS"Vous avez quitté!"$NS
 	break 
 fi
-rm /root/BigDumper/dump/tmp.dmp
-rm /root/BigDumper/dump/tmp.txt
+rm /root/BigDumper/dump/tmp.*
 }
 fonction_argentHexDec () { #met en forme le solde présent sur le badge de "1235" à "12€35"
 argentdec=$(printf "%d\n" 0x$argenthex)
