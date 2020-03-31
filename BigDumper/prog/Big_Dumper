@@ -423,7 +423,7 @@ elif [ "$faire2" = "b" ] ; then
 fi
 }
 fonction_badgedistributeur () {
-printf '\033]2;BigDumper - Modification argent\a'
+printf '\033]2;BigDumper - Information Badge Distributeur\a'
 choix=""
 until [ "$choix" = "1" ]||[ "$choix" = "2" ]||[ "$choix" = "3" ]||[ "$choix" = "b" ] ; do
 echo $RS"Selectionnez la marque du distributeur"
@@ -438,6 +438,7 @@ echo $YS"b) "$VS"retour"$NS
 read choix
 clear
 done
+
 if [ "$choix" = "1" ] ; then #Selecta
 	choix=""
 	fonction_badgepresent
@@ -447,14 +448,14 @@ if [ "$choix" = "1" ] ; then #Selecta
 	numbadgehexdec=$(printf "%d\n" 0x$numbadgehex)
 	argenthex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/.........................//;7s/............................$//;7p')
 	fonction_argentHexDec
-	until [ "$choix" = "b" ] ; do
+	until [ "$choix" = "1" ] || [ "$choix" = "2" ] || [ "$choix" = "b" ] ; do
 	echo $VS"INFORMATION BADGE SELECTA      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
 	echo $VS"                               VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
 	echo ""
 	echo $RS"Que voulez-vous faire?"$NS
 	echo ""
-	#echo $YS"1) "$VS"Modifier votre n° de badge"$NS
-	#echo $YS"2) "$VS"Modifier votre solde"$NS
+	echo $YS"1) "$VS"Modifier votre n° de badge"$NS
+	echo $YS"2) "$VS"Modifier votre solde"$NS
 	#echo $YS"3) "$VS"  "$NS
 	#echo $YS"4) "$VS"  "$NS
 	#echo $YS"5) "$VS"  "$NS
@@ -463,14 +464,48 @@ if [ "$choix" = "1" ] ; then #Selecta
 	read choix
 	clear
 	done
-	#if [ "$choix" = "1" ] ; then
 	
-	#elif [ "$choix" = "2" ] ; then
-	
-	if [ "$choix" = "b" ] ; then 
-	clear
-	break 
+	if [ "$choix" = "1" ] ; then #modif n° badge
+		combien="1000000"
+		until [ "$combien" -le "999999" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE SELECTA      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
+		echo ""
+		echo $RS"Quel n° de badge voulez-vous mettre? (Maximum 999999)"$NS
+		read combien
+		clear
+		done
+		fonction_modif6char
+		sed -i "5s/^\(.\{43\}\).\{6\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
+		
+	elif [ "$choix" = "2" ] ; then #modif solde
+		combien="5001"
+		until [ "$combien" -le "5000" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE SELECTA      VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
+		echo ""
+		echo $RS"Quel solde voulez-vous mettre? (50€00 maximum)"$NS
+		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 50€00, marquez 5000"$NS
+		read combien
+		clear
+		done
+		fonction_modif4char
+		sed -i "7s/^\(.\{30\}\).\{4\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
+		
+	elif [ "$choix" = "b" ] ; then 
+		echo $RS"Vous avez quitté!"$NS
+		clear
+		break 
 	fi
+	
 elif [ "$choix" = "2" ] ; then #Daltys
 	choix=""
 	fonction_badgepresent
@@ -480,14 +515,14 @@ elif [ "$choix" = "2" ] ; then #Daltys
 	numbadgehexdec=$(printf "%d\n" 0x$numbadgehex)
 	argenthex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '51s/ //g;51s/...........................//;51s/..........................$//;51p')
 	fonction_argentHexDec
-	until [ "$choix" = "b" ] ; do
+	until [ "$choix" = "1" ] || [ "$choix" = "2" ] || [ "$choix" = "b" ] ; do
 	echo $VS"INFORMATION BADGE DALTYS      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
 	echo $VS"                              VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
 	echo ""
 	echo $RS"Que voulez-vous faire?"$NS
 	echo ""
-	#echo $YS"1) "$VS"Modifier votre n° de badge"$NS
-	#echo $YS"2) "$VS"Modifier votre solde"$NS
+	echo $YS"1) "$VS"Modifier votre n° de badge"$NS
+	echo $YS"2) "$VS"Modifier votre solde"$NS
 	#echo $YS"3) "$VS"  "$NS
 	#echo $YS"4) "$VS"  "$NS
 	#echo $YS"5) "$VS"  "$NS
@@ -496,14 +531,48 @@ elif [ "$choix" = "2" ] ; then #Daltys
 	read choix
 	clear
 	done
-	#if [ "$choix" = "1" ] ; then
 	
-	#elif [ "$choix" = "2" ] ; then
+	if [ "$choix" = "1" ] ; then #modif n° badge
+		combien="65536"
+		until [ "$combien" -le "65535" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE DALTYS      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
+		echo ""
+		echo $RS"Quel n° de badge voulez-vous mettre? (Maximum 65535)"$NS
+		read combien
+		clear
+		done
+		fonction_modif4char
+		sed -i "49s/^\(.\{45\}\).\{4\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
 		
-	if [ "$choix" = "b" ] ; then 
-	clear
-	break 
+	elif [ "$choix" = "2" ] ; then #modif solde
+		combien="5001"
+		until [ "$combien" -le "5000" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE DALTYS      VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
+		echo ""
+		echo $RS"Quel solde voulez-vous mettre? (50€00 maximum)"$NS
+		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 50€00, marquez 5000"$NS
+		read combien
+		clear
+		done
+		fonction_modif5char
+		sed -i "51s/^\(.\{32\}\).\{5\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
+		
+	elif [ "$choix" = "b" ] ; then 
+		echo $RS"Vous avez quitté!"$NS
+		clear
+		break 
 	fi
+	
 elif [ "$choix" = "3" ] ; then #D8
 	choix=""
 	fonction_badgepresent
@@ -515,16 +584,16 @@ elif [ "$choix" = "3" ] ; then #D8
 	numbadgehexdec=$(printf "%d\n" 0x$numbadgehex)
 	argenthex=$(xxd /root/BigDumper/dump/tmp.dmp | sed -n '7s/ //g;7s/...........................//;7s/..........................$//;7p')
 	fonction_argentHexDec
-	until [ "$choix" = "b" ] ; do
+	until [ "$choix" = "1" ]|| [ "$choix" = "2" ] || [ "$choix" = "3" ] || [ "$choix" = "b" ] ; do
 	echo $VS"INFORMATION BADGE D8      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
 	echo $VS"                          VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
 	echo $VS"                          IL VOUS RESTE $RS$cafesgratuitsdec "$VS"CAFES GRATUITS"$NS
 	echo ""
 	echo $RS"Que voulez-vous faire?"$NS
 	echo ""
-	#echo $YS"1) "$VS"Modifier votre n° de badge"$NS
-	#echo $YS"2) "$VS"Modifier votre solde"$NS
-	#echo $YS"3) "$VS"Modifier le nombre de cafés gratuits"$NS
+	echo $YS"1) "$VS"Modifier votre n° de badge"$NS
+	echo $YS"2) "$VS"Modifier votre solde"$NS
+	echo $YS"3) "$VS"Modifier le nombre de cafés gratuits"$NS
 	#echo $YS"4) "$VS"  "$NS
 	#echo $YS"5) "$VS"  "$NS
 	echo ""
@@ -532,32 +601,74 @@ elif [ "$choix" = "3" ] ; then #D8
 	read choix
 	clear
 	done
-	#if [ "$choix" = "1" ] ; then
 	
-	#elif [ "$choix" = "2" ] ; then
-	
-	#elif [ "$choix" = "3" ] ; then
-	#	combien=""
-	#	until [ "$combien" <= "255" ] ; do
-	#	echo $VS"INFORMATION BADGE D8  IL VOUS RESTE $RS$cafesgratuitsdec "$VS"CAFES GRATUITS"$NS
-	#	echo ""
-	#	echo $RS"Combien en voulez-vous? (255 maximum mais ça en fait beaucoup quand même)"$NS
-	#	read combien
-	#	done
+	if [ "$choix" = "1" ] ; then #modif n° badge
+		combien="10000"
+		until [ "$combien" -le "9999" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE D8      VOTRE N° DE BADGE EST: $RS$numbadgehexdec"$NS
+		echo ""
+		echo $RS"Quel n° de badge voulez-vous mettre?"$NS
+		read combien
+		clear
+		done
+		fonction_modif4char
+		sed -i "5s/^\(.\{45\}\).\{4\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
 		
-	
-	if [ "$choix" = "b" ] ; then 
-	clear
-	break 
+	elif [ "$choix" = "2" ] ; then #modif solde
+		combien="5001"
+		until [ "$combien" -le "5000" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE D8      VOTRE SOLDE EST DE: $RS$argentEnEuro"$NS
+		echo ""
+		echo $RS"Quel solde voulez-vous mettre? (50€00 maximum)"$NS
+		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 50€00, marquez 5000"$NS
+		read combien
+		clear
+		done
+		fonction_modif5char
+		sed -i "7s/^\(.\{32\}\).\{5\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
+		
+	elif [ "$choix" = "3" ] ; then #cafégratuit
+		combien="256"
+		until [ "$combien" -le "255" ] ; do #-lt inférieur ou égale
+		echo $VS"INFORMATION BADGE D8      IL VOUS RESTE $RS$cafesgratuitsdec "$VS"CAFES GRATUITS"$NS
+		echo ""
+		echo $RS"Combien en voulez-vous? (255 maximum mais ça en fait beaucoup quand même)"$NS
+		read combien
+		clear
+		done
+		fonction_modif2char
+		sed -i "9s/^\(.\{12\}\).\{2\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt 
+		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
+		echo "Modification en cours, merci de patienter..."
+		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		clear
+		echo "Modification terminée!"
+
+	elif [ "$choix" = "b" ] ; then 
+		clear
+		echo $RS"Vous avez quitté!"$NS
+		break 
 	fi
 	
 elif [ "$choix" = "b" ] ; then 
 	clear
+	echo $RS"Vous avez quitté!"$NS
 	break 
-rm /root/BigDumper/dump/tmp.dmp	
 fi
+rm /root/BigDumper/dump/tmp.dmp
+rm /root/BigDumper/dump/tmp.txt
 }
-fonction_argentHexDec () {
+fonction_argentHexDec () { #met en forme le solde présent sur le badge de "1235" à "12€35"
 argentdec=$(printf "%d\n" 0x$argenthex)
 if [ ${#argentdec} = 4 ]; then #si la variable contient 4 caractères
 	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
@@ -571,19 +682,67 @@ elif [ ${#argentdec} = 0 ]; then
 	argentEnEuro=$(printf "%d\n" 0x$argenthex | sed 's/^/0000/;s/\([^ ]\)/\1 /g;s/ //;s/ /€/;s/ //')
 fi	
 clear
-#echo "Vous avez "$VS$argentEnEuro$NS"sur votre badge."
 }
-fonction_ajoutcafegratuit () {
-nbrcafehex=$(printf "%x\n" $combien)
-if [ ${#nbrcafehex} = 2 ]; then
-	nbrcafeajoutehex=$(printf "%d\n" $combien)
-elif [ ${#nbrcafehex} = 1 ]; then
-	nbrcafeajoutehex=$(printf "%d\n" $combien | sed 's/^/0/')
-elif [ ${#nbrcafehex} = 0 ]; then
-	nbrcafeajoutehex=$(printf "%d\n" $combien | sed 's/^/0/')
+fonction_modif2char () { #met en forme un nbr hexa de "5" à "05"
+CombienHex=$(printf "%x\n" $combien) #convertit de décimal en hexa
+if [ ${#CombienHex} = 2 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien)
+elif [ ${#CombienHex} = 1 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0/')
+elif [ ${#CombienHex} = 0 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0/') #printf avec 0 si aucune valeur en entrée
 fi
-
+xxd /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.txt
 }
+fonction_modif4char () { #met en forme un nbr hexa de "55" à "0055"
+CombienHex=$(printf "%x\n" $combien) #convertit de décimal en hexa
+if [ ${#CombienHex} = 4 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien)
+elif [ ${#CombienHex} = 3 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0/')
+elif [ ${#CombienHex} = 2 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/00/')
+elif [ ${#CombienHex} = 1 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/000/')
+elif [ ${#CombienHex} = 0 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/000/') #printf avec 0 si aucune valeur en entrée
+fi
+xxd /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.txt
+}
+fonction_modif5char () { #met en forme un nbr hexa de "5555" à "55 55"
+CombienHex=$(printf "%x\n" $combien) #convertit de décimal en hexa
+if [ ${#CombienHex} = 4 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/../& /') #ajoute un espace après le 2ème caractère
+elif [ ${#CombienHex} = 3 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0/;s/../& /') #ajoute un espace après le 2ème caractère
+elif [ ${#CombienHex} = 2 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/00 /')
+elif [ ${#CombienHex} = 1 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/00 0/')
+elif [ ${#CombienHex} = 0 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/00 0/') #printf avec 0 si aucune valeur en entrée
+fi
+xxd /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.txt
+}
+fonction_modif6char () { #met en forme un nbr hexa de "55555" à "5 5555"
+CombienHex=$(printf "%x\n" $combien) #convertit de décimal en hexa
+if [ ${#CombienHex} = 5 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/./& /') #ajoute un espace après le 1er caractère
+elif [ ${#CombienHex} = 4 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0/;s/./& /') #ajoute un espace après le 1er caractère	
+elif [ ${#CombienHex} = 3 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0 0/')
+elif [ ${#CombienHex} = 2 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0 00/')
+elif [ ${#CombienHex} = 1 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0 000/')
+elif [ ${#CombienHex} = 0 ]; then
+	CombienHexFinal=$(printf "%x\n" $combien | sed 's/^/0 000/') #printf avec 0 si aucune valeur en entrée
+fi
+xxd /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.txt
+}
+
+
 ##CODE##
 
 if [ "$etat" = "activé" ] ; then
