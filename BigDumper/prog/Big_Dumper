@@ -14,13 +14,11 @@ YS="\033[1;33m" #jaune gras
 ys="\033[0;33m" #jaune
 VS="\033[1;32m" #vert gras
 
-
 ##FONCTIONS##
 fonction_home () {
 clear
-echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP      VOTRE UID EST: $RS$UID "$NS
-echo $VS"                                       IL CORRESPOND AU DUMP: $RS$uidnom "$NS
-echo ""
+echo $VS"BIENVENUE DANS LA CONSOLE DE DUMP      VOTRE UID EST: $RS$UID"$NS
+echo $VS"                                       IL CORRESPOND AU DUMP: $RS$uidnom"$NS
 echo $RS"Que voulez-vous faire?"$NS
 echo ""
 echo $YS"1) "$VS"Dumper un carte avec MFOC"$NS
@@ -91,48 +89,48 @@ fi
 }
 fonction_transfert () {
 printf '\033]2;BigDumper - Transfert\a'
+choix=""
+until [ "$choix" = "y" ] || [ "$choix" = "n" ] || [ "$choix" = "01" ] ; do
 echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$NS
 echo ""
-
 echo $RS"Modifier l'UID? (y/n)"$NS
 echo ""
 read choix
-if [ "$choix" = 01 ] ; then break ; fi
 clear
-
-	if [ "$choix" = "y" ]
-		then
-			echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
-			echo ""
-			ls /root/BigDumper/dump
-			echo $RS"Nom du dump à copier (sans extension):"$NS
-			echo ""
-			read nom
-			if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS 
-			else
-				clear
-				nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp 
-			fi		
-	elif [ "$choix" = "n" ]
-		then
-			echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
-			echo ""
-			ls /root/BigDumper/dump
-			echo $RS"Nom du dump à copier(sans extension):"$NS
-			echo ""
-			read nom
-			if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
-			else
-				echo $RS"Nom de l'ancien dump(sans extension):"$NS
-				echo ""
-				read ancien
-				if [ $ancien = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
-				else
-					clear
-					nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
-				fi	
-			fi	
-	fi
+done
+if [ "$choix" = "y" ] ; then
+	echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+	echo ""
+	ls /root/BigDumper/dump
+	echo $RS"Nom du dump à copier (sans extension):"$NS
+	echo ""
+	read nom
+	if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS 
+	else
+		clear
+		nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp 
+	fi		
+elif [ "$choix" = "n" ] ; then
+	echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
+	echo ""
+	ls /root/BigDumper/dump
+	echo $RS"Nom du dump à copier(sans extension):"$NS
+	echo ""
+	read nom
+	if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
+	else
+		echo $RS"Nom de l'ancien dump(sans extension):"$NS
+		echo ""
+		read ancien
+		if [ $ancien = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
+		else
+			clear
+			nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
+		fi	
+	fi	
+elif [ "$choix" = 01 ] ; then
+	break
+fi
 }
 fonction_transfertAuto () {
 printf '\033]2;BigDumper - Transfert Automatique\a'
@@ -301,7 +299,7 @@ then
 	clear
 	nfc-mfclassic W A /root/BigDumper/dump/reload.dmp
 	echo $YS"Les données ont été supprimées."	
-elif [ "$raz" = "01" ] ; then clear ; break
+elif [ "$raz" = "01" ] || [ "$raz" = "non" ] ; then clear ; break
 fi
 done
 }
@@ -401,30 +399,34 @@ fi
 }
 fonction_parametres () {
 printf '\033]2;BigDumper - Paramètres\a'
-faire2=""
-until [ "$faire2" = "1" ]||[ "$faire2" = "2" ]||[ "$faire2" = "b" ] ; do
+choix=""
+#until [ "$faire2" = "1" ]||[ "$faire2" = "2" ]||[ "$faire2" = "b" ] ; do
+while true ; do
+	TERMINALTITLE="PARAMETRES"
+	fonction_dash_calc
 echo $RS"Que souhaitez-vous faire?"$NS
 echo ""
 echo $YS"1) "$VS"Mettre à jour le programme"$NS
 echo $YS"2) "$VS"Configuration verrouillage du programme par badge"$NS
 echo ""
 echo $YS"b) "$VS"retour"$NS
-read faire2
+read choix
 clear
-done
-if [ "$faire2" = 1 ] ; then
+if [ "$choix" = 1 ] ; then
 	fonction_MiseAJour
-elif [ "$faire2" = 2 ] ; then
+elif [ "$choix" = 2 ] ; then
 	fonction_verrouillage
-elif [ "$faire2" = "b" ] ; then 
+elif [ "$choix" = "b" ] ; then 
 	clear
-	break 	
+	break
 fi
+done
 }
 fonction_badgedistributeur () {
 printf '\033]2;BigDumper - Information Badge Distributeur\a'
 choix=""
-until [ "$choix" = "1" ]||[ "$choix" = "2" ]||[ "$choix" = "3" ]||[ "$choix" = "b" ] ; do
+#until [ "$choix" = "1" ]||[ "$choix" = "2" ]||[ "$choix" = "3" ]||[ "$choix" = "b" ] ; do
+while true ; do
 echo $RS"Selectionnez la marque du distributeur"
 echo ""
 echo $YS"1) "$VS"Selecta"$NS
@@ -436,9 +438,10 @@ echo ""
 echo $YS"b) "$VS"retour"$NS
 read choix
 clear
-done
+#done
 
 if [ "$choix" = "1" ] ; then #Selecta
+	while true ; do
 	choix=""
 	fonction_badgepresent
 	echo "Extraction des données en cours, merci de patienter..."
@@ -480,6 +483,7 @@ if [ "$choix" = "1" ] ; then #Selecta
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 		
 	elif [ "$choix" = "2" ] ; then #modif solde
 		combien="5001"
@@ -498,14 +502,17 @@ if [ "$choix" = "1" ] ; then #Selecta
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 		
 	elif [ "$choix" = "b" ] ; then 
-		echo $RS"Vous avez quitté!"$NS
 		clear
 		break 
 	fi
+	clear
+	done
 	
 elif [ "$choix" = "2" ] ; then #Daltys
+	while true ; do
 	choix=""
 	fonction_badgepresent
 	echo "Merci de patienter pendant le chargement..."
@@ -547,6 +554,7 @@ elif [ "$choix" = "2" ] ; then #Daltys
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 		
 	elif [ "$choix" = "2" ] ; then #modif solde
 		combien="5001"
@@ -565,14 +573,17 @@ elif [ "$choix" = "2" ] ; then #Daltys
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 		
 	elif [ "$choix" = "b" ] ; then 
-		echo $RS"Vous avez quitté!"$NS
 		clear
 		break 
 	fi
+	clear
+	done
 	
 elif [ "$choix" = "3" ] ; then #D8
+	while true ; do
 	choix=""
 	fonction_badgepresent
 	echo "Merci de patienter pendant le chargement..."
@@ -617,6 +628,7 @@ elif [ "$choix" = "3" ] ; then #D8
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 		
 	elif [ "$choix" = "2" ] ; then #modif solde
 		combien="5001"
@@ -635,6 +647,7 @@ elif [ "$choix" = "3" ] ; then #D8
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 		
 	elif [ "$choix" = "3" ] ; then #cafégratuit
 		combien="256"
@@ -652,18 +665,20 @@ elif [ "$choix" = "3" ] ; then #D8
 		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
+		clear
 
 	elif [ "$choix" = "b" ] ; then 
 		clear
-		echo $RS"Vous avez quitté!"$NS
 		break 
 	fi
+	clear
+	done
 	
 elif [ "$choix" = "b" ] ; then 
 	clear
-	echo $RS"Vous avez quitté!"$NS
 	break 
 fi
+done
 rm /root/BigDumper/dump/tmp.*
 }
 fonction_argentHexDec () { #met en forme le solde présent sur le badge de "1235" à "12€35"
@@ -739,7 +754,19 @@ elif [ ${#CombienHex} = 0 ]; then
 fi
 xxd /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.txt
 }
-
+fonction_dash_calc () {	
+	size=${#TERMINALTITLE}
+	calc=$(( 65-size ))
+	calc=$(( calc/2 ))
+	numcalc=1
+	DASHESN="-"
+	while [ $numcalc != $calc ]
+	do
+		DASHESN=""$DASHESN"-"
+		numcalc=$(( numcalc+1 ))
+	done
+	echo "$DASHESN"$RS"$TERMINALTITLE"$NS"$DASHESN"
+}
 
 ##CODE##
 
@@ -765,8 +792,9 @@ elif [ "$etat" = "désactivé" ] ; then
 fi	
 fonction_uidnom
 fonction_nomuid	
-until [ $a != 1 ]&&[ $faire = 00 ] ; do
-until [ $a != 1 ]&&[ $faire = 01 ] ; do
+#until [ $a != 1 ]&&[ $faire = 00 ] ; do
+#until [ $a != 1 ]&&[ $faire = 01 ] ; do
+while true ; do
 printf '\033]2;BigDumper\a'
 fonction_home
 echo ""
@@ -826,15 +854,16 @@ elif [ $faire = 11 ]
 #	then
 #		fonction_
 		
-elif [ $faire = r ]
+elif [ $faire = "r" ]
 	then
 		echo "CHARGEMENT DE VOTRE UID EN COURS..."
 		fonction_UID
 		fonction_uidnom
 		fonction_nomuid
 		
-		clear		
-		break 1
+		clear
+		#break 1
+		continue 
 		
 elif [ $faire = "s" ]
 	then
@@ -855,5 +884,6 @@ echo $YS"Press Enter pour quitter"$NS
 read "pause"
 clear
 
-done
+
+#done
 done
