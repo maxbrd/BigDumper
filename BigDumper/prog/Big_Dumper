@@ -44,6 +44,7 @@ fonction_erreur () {
 until [ $faire = 1 ]||[ $faire = 2 ]||[ $faire = 3 ]||[ $faire = 4 ]||[ $faire = 5 ]||[ $faire = 6 ]||[ $faire = 00 ]||[ $faire = 7 ]||[ $faire = 8 ]||[ $faire = 9 ]||[ $faire = 10 ]||[ $faire = 11 ]||[ $faire = r ]||[ $faire = s ]||[ $faire = p ] ; do  #Boucle d'erreur
 	fonction_home
 	echo $RS"Erreur de choix, merci de recommencer."$NS
+	echo -n "Choix: "
 	read faire
 	clear
 done
@@ -128,8 +129,7 @@ elif [ "$choix" = "n" ] ; then
 			nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
 		fi	
 	fi	
-elif [ "$choix" = 01 ] ; then
-	break
+elif [ "$choix" = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
 fi
 }
 fonction_transfertAuto () {
@@ -282,6 +282,8 @@ elif [ "$supp" = 01 ] ; then break ; echo $RS"Vous avez quitté!"$NS ; fi
 }
 fonction_liste_dump () {
 printf '\033]2;BigDumper - Liste des Dump\a'
+TERMINALTITLE="LISTE DUMPS"
+fonction_dash_calc
 ls /root/BigDumper/dump
 }
 fonction_raz_clone () {
@@ -399,11 +401,11 @@ fi
 }
 fonction_parametres () {
 printf '\033]2;BigDumper - Paramètres\a'
+TERMINALTITLE="PARAMETRES"
 choix=""
 #until [ "$faire2" = "1" ]||[ "$faire2" = "2" ]||[ "$faire2" = "b" ] ; do
 while true ; do
-	TERMINALTITLE="PARAMETRES"
-	fonction_dash_calc
+fonction_dash_calc
 echo $RS"Que souhaitez-vous faire?"$NS
 echo ""
 echo $YS"1) "$VS"Mettre à jour le programme"$NS
@@ -492,6 +494,7 @@ if [ "$choix" = "1" ] ; then #Selecta
 		echo ""
 		echo $RS"Quel solde voulez-vous mettre? (50€00 maximum)"$NS
 		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 50€00, marquez 5000"$NS
+		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 3€00, marquez 300"$NS
 		read combien
 		clear
 		done
@@ -563,6 +566,7 @@ elif [ "$choix" = "2" ] ; then #Daltys
 		echo ""
 		echo $RS"Quel solde voulez-vous mettre? (50€00 maximum)"$NS
 		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 50€00, marquez 5000"$NS
+		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 3€00, marquez 300"$NS
 		read combien
 		clear
 		done
@@ -637,6 +641,7 @@ elif [ "$choix" = "3" ] ; then #D8
 		echo ""
 		echo $RS"Quel solde voulez-vous mettre? (50€00 maximum)"$NS
 		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 50€00, marquez 5000"$NS
+		echo $RS"IMPORTANT!!!: "$NS"Exemple, pour ajouter 3€00, marquez 300"$NS
 		read combien
 		clear
 		done
@@ -798,6 +803,7 @@ while true ; do
 printf '\033]2;BigDumper\a'
 fonction_home
 echo ""
+echo -n "Choix: "
 read faire
 clear
 fonction_erreur	
@@ -860,7 +866,6 @@ elif [ $faire = "r" ]
 		fonction_UID
 		fonction_uidnom
 		fonction_nomuid
-		
 		clear
 		#break 1
 		continue 
@@ -881,7 +886,7 @@ fi
 echo ""
 echo $YS"TERMINE"$NS
 echo $YS"Press Enter pour quitter"$NS
-read "pause"
+read ""
 clear
 
 
