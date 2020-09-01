@@ -50,4 +50,5 @@ fi
 
 # install our script
 sudo cp -a miLazyCracker.sh /usr/local/bin/miLazyCracker
+chmod +x /usr/local/bin/miLazyCracker
 echo "Terminé."
