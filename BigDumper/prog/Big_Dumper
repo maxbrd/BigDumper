@@ -300,6 +300,7 @@ if [ "$raz" = "oui" ]
 then
 	clear
 	nfc-mfclassic W A /root/BigDumper/dump/reload.dmp
+	fonction_UID
 	echo $YS"Les données ont été supprimées."	
 elif [ "$raz" = "01" ] || [ "$raz" = "non" ] ; then clear ; break
 fi
