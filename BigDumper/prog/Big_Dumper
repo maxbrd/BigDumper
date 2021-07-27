@@ -109,7 +109,7 @@ if [ "$choix" = "y" ] ; then
 	if [ $nom = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS 
 	else
 		clear
-		nfc-mfclassic W A /root/BigDumper/dump/$nom.dmp
+		nfc-mfclassic W A u /root/BigDumper/dump/$nom.dmp
 	fi		
 elif [ "$choix" = "n" ] ; then
 	echo $YS"TRANSFERT		TAPEZ 01 POUR RETOURNER AU MENU PRINCIPAL"$ys
@@ -126,7 +126,7 @@ elif [ "$choix" = "n" ] ; then
 		if [ $ancien = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
 		else
 			clear
-			nfc-mfclassic w B /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
+			nfc-mfclassic w B u /root/BigDumper/dump/$nom.dmp /root/BigDumper/dump/$ancien.dmp
 		fi	
 	fi	
 elif [ "$choix" = 01 ] ; then break ; clear ; echo $RS"Vous avez quitté!"$NS
@@ -145,7 +145,7 @@ else
 	fonction_UID
 	FICHIER_UID="${UID}.dmp"
 	if [ -f $FICHIER_UID ] ; then #Vérifie si le fichier dans la variable existe
-		nfc-mfclassic w B /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID
+		nfc-mfclassic w B u /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID /root/BigDumper/dump/NePasSupprimer/$FICHIER_UID
 	else
 		echo "Aucun fichier ne correspond!"
 	fi
@@ -299,7 +299,7 @@ read raz
 if [ "$raz" = "oui" ]
 then
 	clear
-	nfc-mfclassic W A /root/BigDumper/dump/reload.dmp
+	nfc-mfclassic W A u /root/BigDumper/dump/reload.dmp
 	echo $YS"Les données ont été supprimées."	
 elif [ "$raz" = "01" ] || [ "$raz" = "non" ] ; then clear ; break
 fi
@@ -482,7 +482,7 @@ if [ "$choix" = "1" ] ; then #Selecta
 		sed -i "5s/^\(.\{43\}\).\{6\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear
@@ -502,7 +502,7 @@ if [ "$choix" = "1" ] ; then #Selecta
 		sed -i "7s/^\(.\{30\}\).\{4\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear
@@ -554,7 +554,7 @@ elif [ "$choix" = "2" ] ; then #Daltys
 		sed -i "49s/^\(.\{45\}\).\{4\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear
@@ -574,7 +574,7 @@ elif [ "$choix" = "2" ] ; then #Daltys
 		sed -i "51s/^\(.\{32\}\).\{5\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear
@@ -629,7 +629,7 @@ elif [ "$choix" = "3" ] ; then #D8
 		sed -i "5s/^\(.\{45\}\).\{4\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear
@@ -649,7 +649,7 @@ elif [ "$choix" = "3" ] ; then #D8
 		sed -i "7s/^\(.\{32\}\).\{5\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear
@@ -667,7 +667,7 @@ elif [ "$choix" = "3" ] ; then #D8
 		sed -i "9s/^\(.\{12\}\).\{2\}\(.*\)$/\1$CombienHexFinal\2/" /root/BigDumper/dump/tmp.txt 
 		xxd -r /root/BigDumper/dump/tmp.txt /root/BigDumper/dump/tmp.dmp
 		echo "Modification en cours, merci de patienter..."
-		nfc-mfclassic w B /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
+		nfc-mfclassic w B u /root/BigDumper/dump/tmp.dmp /root/BigDumper/dump/tmp.dmp >/dev/null
 		clear
 		echo "Modification terminée!"
 		clear

@@ -5,7 +5,7 @@ TERMINALTITLE="INSTALLATION DE TOUS LES MODULES DE BIGDUMPER"
 #installation des pré-requis
 apt-get clean
 apt-get update
-apt-get -y install git binutils make csh g++ sed gawk autoconf automake autotools-dev barrier leafpad libglib2.0-dev libnfc* libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool gnome-terminal pyrit hexedit leafpad subversion gvfs-backends
+apt-get -y install git binutils make csh g++ sed gawk autoconf automake autotools-dev barrier libglib2.0-dev libnfc* libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool gnome-terminal pyrit hexedit leafpad subversion gvfs-backends
 
 #installation de miLazyCracker
 chmod +x /root/miLazyCracker/miLazyCrackerFreshInstall.sh
