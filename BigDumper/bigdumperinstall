@@ -5,7 +5,7 @@ TERMINALTITLE="INSTALLATION DE TOUS LES MODULES DE BIGDUMPER"
 #installation des pré-requis
 apt-get clean
 apt-get update
-apt-get -y install git binutils make csh g++ sed gawk autoconf automake autotools-dev barrier libglib2.0-dev libnfc* libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool gnome-terminal pyrit hexedit leafpad subversion gvfs-backends
+apt-get -y install git binutils make csh g++ sed gawk autoconf automake autotools-dev barrier libglib2.0-dev libnfc* libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool gnome-terminal pyrit hexedit bless leafpad subversion gvfs-backends
 
 #installation de miLazyCracker
 chmod +x /root/miLazyCracker/miLazyCrackerFreshInstall.sh
@@ -14,13 +14,14 @@ cd /root/miLazyCracker
 cd ../
 
 #installation de MFOC
-cd /root/mfoc
-autoreconf -vis
-autoreconf -vis
-./configure
-./configure
-make && sudo make install
-cd ../
+apt-get install mfoc
+#cd /root/mfoc
+#autoreconf -vis
+#autoreconf -vis
+#./configure
+#./configure
+#make && sudo make install
+#cd ../
 
 #création de la commande dump et du raccourci
 chmod +x /root/BigDumper/prog/Big_Dumper
@@ -28,6 +29,7 @@ cd /usr/bin
 ln -s /root/BigDumper/prog/Big_Dumper dump
 cd ../
 cp /root/BigDumper/prog/BigDumper.desktop /root/Desktop
+cp /root/BigDumper/prog/BigDumper.desktop /root/Bureau
 
 clear
 echo "TOUT EST INSTALLE, TAPEZ dump DANS LA CONSOLE POUR LANCER LE PROGRAMME."
