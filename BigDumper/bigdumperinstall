@@ -7,6 +7,17 @@ apt-get clean
 apt-get update
 apt-get -y install git binutils make csh g++ sed gawk autoconf automake autotools-dev barrier libglib2.0-dev libnfc* libnfc-dev liblzma-dev libnfc-bin libusb-dev libtool gnome-terminal pyrit hexedit bless leafpad subversion gvfs-backends
 
+#installation libnfc-1.7.1
+cd ../
+mkdir tools
+cd tools
+git clone https://github.com/maxbrd/libnfc-1.7.1.git
+cd libnfc-1.7.1
+autoreconf -vis
+./configure
+make && sudo make install
+cd ../
+
 #installation de miLazyCracker
 chmod +x /root/miLazyCracker/miLazyCrackerFreshInstall.sh
 cd /root/miLazyCracker
